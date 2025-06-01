@@ -1,0 +1,285 @@
+:root {
+    --nav-bg-color: #F5AE6F;
+    --nav-title: white;
+    --nav-color: #975203;
+    --nav-indColor:#695033;
+    --nav-signUp: black;
+    --nav-sigIn: white;
+    --fontFam: Kanit;
+    --bgColor: #d9d9d9;
+    --buttColor: white;
+    --buttBgColor: #ffa500;
+    --tabNameColor: #ffa500;
+    --BgColor: #fff;
+
+    --color_1: #F5AE6F;
+    --color_2: white;
+    --color_3: black;
+    --color_4: #975203;
+    --sideBarIndicator: #d67b13;
+}
+
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+a{
+    text-decoration: none;
+}
+
+.navBarWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 5.5rem;
+    font-family: var(--fontFam);
+    font-weight: bold;
+    background-color: var(--nav-bg-color);
+}
+
+.navBarWrapper > div {
+    display: flex;
+    gap: clamp(0px, 2vw, .65rem);
+    align-items: center;
+}
+
+.navBarWrapper .left {
+    margin-left: 1rem;
+}
+
+.navBarWrapper .left .title {
+    color: var(--nav-title);
+}
+.navBarWrapper .left > img {
+    display: flex;
+    width: 30px;
+}
+
+.navBarWrapper .mid > ul{
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+}
+
+.navBarWrapper .mid > ul > .Links {
+    list-style: none;
+    color: var(--nav-color);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all .3s ease-out;
+}
+
+.navBarWrapper .mid > ul > .Links .content {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5px, 2vw, 4px);
+}
+
+.navBarWrapper .mid > ul > .ind {
+    list-style: none;
+    color: var(--nav-indColor);
+}
+
+.navBarWrapper .mid > ul > .ind .indicator{
+    transform: scaleX(0);
+    background-color: var(--nav-indColor);
+    height: .2rem;
+    margin-top: -2px;
+    animation: indicate .5s ease-out forwards;
+}
+
+@keyframes indicate {
+    to {
+        transform: scaleX(.95);
+    }
+}
+
+.navBarWrapper .right .authButts, .navBarWrapper .right .HamburgerButt{
+    padding: .5rem 1rem;
+    font-size: 1.15rem;
+    border: none;
+    font-weight: bold;
+    border-radius: .5rem;
+}
+
+.navBarWrapper .right .HamburgerButt {
+    margin-right: 1rem;
+}
+
+.navBarWrapper .right .authButts > .Links{
+    color: inherit;
+}
+
+.navBarWrapper .right > button:nth-child(1) {
+    background-color: var(--nav-sigIn);
+    color: var(--nav-bg-color);
+}
+
+.navBarWrapper .right > button:nth-child(1):hover {
+    color: var(--nav-sigIn);
+    background-color: var(--buttBgColor);
+}
+
+.navBarWrapper .right > button:nth-child(2) {
+    background-color: black;
+    color: white;
+}
+
+.navBarWrapper .right > button:nth-child(2):hover {
+    color: black;
+    background-color: white;
+}
+
+
+/* SideBar Component */
+
+.sidebar {
+    opacity: 0;
+    animation: popUp .8s forwards ease-out;
+}
+
+.hideSideBar {
+    animation: popDown .8s forwards ease-out;
+}
+
+.sidebar > ul, .hideSideBar > ul {
+    width: 7.5rem;
+    height: 100vh;
+    position: absolute;
+    right: 0;
+}
+
+.sidebar > ul {
+    background-color: #F5AE6F;
+    font-weight: bolder;
+    animation: slideSideBar .5s forwards ease-out;
+}
+
+.hideSideBar > ul {
+    background-color: #F5AE6F;
+    font-weight: bolder;
+    animation: hideSidebarSlide .5s forwards ease-out;
+}
+
+@keyframes slideSideBar {
+    from {
+        transform: translateX(7.5rem);
+    }
+    to {
+        transform: translateX(0rem);
+    }
+}
+
+@keyframes hideSidebarSlide {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(7.5rem);
+    }
+}
+
+
+@keyframes popUp {
+    to {
+        display: block;
+        opacity: 1;
+    }
+}
+
+@keyframes popDown {
+    to {
+        display: none;
+        opacity: 0;
+    }
+}
+
+@media (min-width: 700px) {
+    .sidebar > ul, .hideSideBar > ul {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) and (max-height: 800px) {
+    .navBarWrapper .mid > ul{
+        display: none;
+    }
+
+
+    /* SideBar Component */
+
+    .sidebar, .hideSideBar {
+        width: 100vw;
+        height: 100vh;
+        background-color: #f1c386bd;
+        position: fixed;
+        font-weight: 500;
+        font-family: "Kanit";
+        letter-spacing: .1rem;
+        top: 0rem;
+        z-index: 2;
+        overflow-y: scroll;
+    }
+
+    .sidebar > ul, .hideSideBar > ul {
+        background-color: #F5AE6F;
+        font-weight: bolder;
+        height: 120vh;
+    }
+
+    .sidebar > ul > .HamburgerButt, .hideSideBar > ul > .HamburgerButt {
+        width: 100%;
+        font-size: 2rem;
+        border: none;
+        height: 9rem;
+        background-color: var(--color_4);
+        color: var(--color_3);
+    }
+
+    .sidebar > ul > .HamburgerButt:hover, .hideSideBar > ul > .HamburgerButt:hover {
+        background-color: var(--sideBarIndicator);
+        color: wheat;
+    }
+
+    .sidebar > ul > .Links, .hideSideBar > ul > .Links{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        height: 5rem;
+        font-size: 1.4rem;
+        padding: 2rem 0;
+        color: inherit;
+        text-decoration: none;
+        transition: .5s ease-out;
+    }
+
+    .sidebar > ul > .Links:hover {
+        background-color: var(--sideBarIndicator);
+        color: white;
+    }
+
+    .sidebar > ul > .indicated, .hideSideBar > ul > .indicated {
+        background-color: var(--sideBarIndicator);
+        color: white;
+    }
+
+    .sidebar > ul > .Links > img, .hideSideBar > ul > .Links > img {
+        width: 30px;
+        display: block;
+        margin: auto;
+    }
+
+    .indicated .indication {
+        display: none;
+    }
+}
