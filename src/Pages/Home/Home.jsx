@@ -25,7 +25,7 @@ const Home = () => {
                 Welcome User! 
             </h1>
             <p>Write, read and document your work and studies using the Acad Web App for free!</p>
-            <Link to={"/Acad/Tasks"} className={s.Links}>
+            <Link to={"/AcadComponent/Tasks"} className={s.Links}>
               <Button content={"Get Started"} func={()=>{pagination(1)}}></Button>
             </Link>
           </div>

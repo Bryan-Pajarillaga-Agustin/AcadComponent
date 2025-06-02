@@ -25,13 +25,13 @@ const Contacts = lazy(()=> import("./Pages/Contacts/Contacts"))
 const Dashboard = lazy(()=> import('./Pages/Dashboard/Dashboard'))
 
 const router = [
-  {path: "/Acad/", element: <Home/>},
-  {path: "/Acad/Tasks", element: <Tasks/>},
-  {path: "/Acad/Folders", element: <Folders/>},
-  {path: "/Acad/Contacts", element: <Contacts/>},
-  {path: "/Acad/Dashboard", element: <Dashboard/>},
-  {path: "/Acad/SignIn", element: <SignIn/>},
-  {path: "/Acad/SignUp", element: <SignUp/>},
+  {path: "/AcadComponent/", element: <Home/>},
+  {path: "/AcadComponent/Tasks", element: <Tasks/>},
+  {path: "/AcadComponent/Folders", element: <Folders/>},
+  {path: "/AcadComponent/Contacts", element: <Contacts/>},
+  {path: "/AcadComponent/Dashboard", element: <Dashboard/>},
+  {path: "/AcadComponent/SignIn", element: <SignIn/>},
+  {path: "/AcadComponent/SignUp", element: <SignUp/>},
   {path: "*", element: <PageNotFound/>}
 ]
 
