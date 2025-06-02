@@ -1,14 +1,13 @@
-import { createContext, useState } from 'react'
+import { createContext, lazy, useState } from 'react'
 import './App.css'
 
 // Navbar
-import NavBar from './NavBar/NavBar'
+import NavBar from "./Navbar/Navbar"
 // Page Components
-import Home from "./Pages/Home/Home"
-import Tasks from "./Pages/Tasks/Tasks"
-import Folders from "./Pages/Folders/Folders"
-import Contacts from "./Pages/Contacts/Contacts"
-import Dashboard from './Pages/Dashboard/Dashboard'
+
+
+
+
 // Authentication Components
 import SignIn from "./Authentication/SignIn/SignIn"
 import SignUp from "./Authentication/SignUp/SignUp"
@@ -18,6 +17,12 @@ import SaveChanges from './Components/SaveChanges/SaveChanges'
 // PageNotFound
 import PageNotFound from './PageNotFound/PageNotFound'
 import { BrowserRouter, Routes, Route} from "react-router-dom"
+
+const Home = lazy(()=> import("./Pages/Home/Home"))
+const Tasks = lazy(()=> import("./Pages/Tasks/Tasks"))
+const Folders = lazy(()=> import("./Pages/Folders/Folders"))
+const Contacts = lazy(()=> import("./Pages/Contacts/Contacts"))
+const Dashboard = lazy(()=> import('./Pages/Dashboard/Dashboard'))
 
 const router = [
   {path: "/Acad/", element: <Home/>},
