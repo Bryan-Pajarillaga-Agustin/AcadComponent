@@ -16,8 +16,8 @@ button {
 }
 
 body {
-    overflow: hidden;
-    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-x: scroll;
     width: 99vw;
 }
 

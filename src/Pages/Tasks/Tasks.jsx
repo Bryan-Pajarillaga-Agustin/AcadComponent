@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { context } from '../../App'
 import { useContext, useState, useEffect } from 'react'
 // Tasks File Components
@@ -22,11 +22,13 @@ import { createContext } from 'react'
 export const tasksContext = createContext()
 
 import { db } from '../../Firebase/Firebase'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { update } from 'firebase/database'
+import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore'
 const Tasks = () => {
   // Context
-  const {user, setHideNavBar, setHideSideBar, setPages} = useContext(context)
+  const { user, setHideNavBar, setHideSideBar, setPages, setLoading } = useContext(context)
+
+  // Refs
+  const searchValue = useRef()
 
   // States
   // Booleans
@@ -42,24 +44,226 @@ const Tasks = () => {
   const [type, setType] = useState("Pending")
 
   // Numbers 
-  
+
   const [numberOfChanges, setNumberOfChanges] = useState(null)
 
   // Arrays and Objects
   const [tasks, setTasks] = useState([])
-  const [updatedTasks, setUpdatedTasks] = useState(tasks.length != 0 ? [...tasks] : []) 
-  const [filteredTask, setFilteredTask] = useState([])
+  const [updatedTasks, setUpdatedTasks] = useState(tasks.length != 0 ? [...tasks] : [])
+  const [filteredTasks, setFilteredTasks] = useState([])
   const [selectedTasks, setSelectedTasks] = useState([])
   const [changes, setChanges] = useState([])
+  const [openedTask, setOpenedTask] = useState({})
   const [sortingTypes, setSortingTypes] = useState([
-    {type: "Pending", ind: true},
-    {type: "Finished", ind: false},
-    {type: "All Tasks", ind: false},
+    { type: "Pending", ind: true },
+    { type: "Finished", ind: false },
+    { type: "All Tasks", ind: false },
   ])
+  const [sortOptions, setSortOptions] = useState([
+    { description: "Newest to Oldest", state: false },
+    { description: "Oldest to Newest", state: false },
+    { description: "From A-Z", state: false },
+    { description: "From Z-A", state: false },
+  ])
+
+  // *-------------------- FUNCTIONS  -----------------------* 
+
+  const writeTask = async (data) => {
+    let dataTask = [...tasks]; // Assuming 'tasks' is an array in your component state
+    const userUID = user.uid?.toString(); // Get the user UID
+    const docRef = doc(db, "Users", userUID); // Correctly create a document reference
+
+
+    let letters = "qwertyuiopasdfghjklzxcvbnm";
+    let randId = "";
+    for (let i = 0; i < 10; i++) {
+      let random = Math.floor(Math.random() * (letters.length)); //Corrected random number generation
+      randId = randId.concat(letters[random]);
+    }
+    let newTask = {
+      id: randId,
+      task: data,
+      dateCreated: { fullDate: new Date(), time: Date.now() },
+      selected: false,
+      style: "default",
+      cName: [
+        JSON.stringify(styles.col),
+        JSON.stringify(styles.br),
+        JSON.stringify(styles.fs),
+        JSON.stringify(styles.bgC),
+        JSON.stringify(styles.fW),
+      ],
+      isChecked: false,
+      type: "pending",
+    };
+
+    dataTask.unshift(newTask);
+    try {
+      await updateDoc(docRef, {
+        tasks: arrayUnion(newTask), // Directly add the newTask
+      });
+      setWriteTaskPrompt(false);
+      //  Update state with the new task.  Don't rely on docSnap.Tasks, which might be outdated.
+      setTasks([...dataTask]);  //Update from local state after successful write
+
+    } catch (error) {
+      console.log("Error writing task:", error);
+    }
+  };
+
+  const unselectAll = () => {
+    let data = tasks
+    let filtTasks = filteredTasks
+
+    if (searching) {
+      filtTasks = filtTasks.map(task => {
+        return { ...task, isChecked: false }
+      })
+
+      handleSelectedTasks(null)
+    } else {
+      data = data.map(task => {
+        return { ...task, isChecked: false };;
+      });
+
+      handleSelectedTasks(null)
+    }
+
+    setTasks(prevCheckboxes => {
+      return prevCheckboxes.map(task => {
+        return { ...task, isChecked: false };;
+      });
+    });
+    if (searching) {
+      setFilteredTasks([...filtTasks])
+    }
+  };
+
+  // Reusable FUNCTIONS 
+
+  function handleSelectedTasks(data) {
+    setSelectedTasks(data == null ? [] : [...data])
+  }
+
+  function handleMarking(filtData, upData, prevData) {
+    const locStor = JSON.parse(localStorage.getItem("Changes")) != null ?
+      JSON.parse(localStorage.getItem("Changes")) : []
+    if (locStor.length == 0) {
+      locStor.push(tasks)
+    }
+    if (locStor.length >= 1) {
+      locStor.push(upData)
+    }
+    localStorage.setItem("Changes", JSON.stringify(locStor))
+    setNumberOfChanges(locStor.length - 1)
+
+    let checkedUpData = []
+    let unCheckedUpData = []
+    for (let i in upData) {
+      !upData[i].isChecked ?
+        unCheckedUpData.push(upData[i]) :
+        checkedUpData.push(upData[i])
+    }
+
+    if (selectedTasks.length >= 1) { //Updates the UI in the client-server
+      if (searching)
+        setFilteredTasks([...filtData]);
+
+      setTasks([...checkedUpData, ...unCheckedUpData]);
+    }
+
+  }
+
+  function handleSearch() {
+    if (searchValue.current.value == "") {
+      setSearching(false)
+      setFilteredTasks(null)
+    } else {
+      setSearching(true)
+      setFilteredTasks(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
+      console.log(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
+      setSorting(false)
+    }
+  }
+
+  function handleIsSorting() {
+    let data = sortOptions
+    for (let i = 0; i < sortOptions.length; i++) {
+      if (data[i].state == true) {
+        setSorting(true)
+        break
+      } else if (i == sortOptions.length - 1 && sortOptions[i].state == false) {
+        setSorting(false)
+      }
+    }
+  }
+
+  async function saveToDataBase() {
+    const userUID = user?.uid.toString();
+    const docRef = doc(db, `Users/${userUID}`);
+
+    setLoading(true)
+    let changes = JSON.parse(localStorage.getItem("Changes"))
+    changes = [...changes[numberOfChanges]]
+    changes = changes.map((task) => {
+      return { ...task, isChecked: false }
+    })
+
+    try {
+      await updateDoc(docRef, { tasks: changes });  //Update from local state after successful write
+      setNumberOfChanges(null)
+      setTasks([...changes])
+      localStorage.removeItem("Changes")
+    } catch (error) {
+      alert(error.message)
+    }
+
+    setLoading(false)
+  }
+
+  // *-------------------- FUNCTIONS  -----------------------*
+
+
+  // Effects
+
+  useEffect(() => {
+    setPages(prev => prev.map((p) => {
+      if (p.name === "Tasks") return { ...p, ind: true }
+
+      return { ...p }
+    }))
+
+    const getFromFirestore = async () => {
+      try {
+        const docRef = doc(db, "Users", user?.uid)
+        const data = await getDoc(docRef)
+
+        let tasksData = data.data().tasks
+
+        for (let i in tasksData) {
+          tasksData[i].cName = [
+            JSON.stringify(styles.col),
+            JSON.stringify(styles.br),
+            JSON.stringify(styles.fs),
+            JSON.stringify(styles.bgC),
+            JSON.stringify(styles.fW),
+          ]
+        }
+
+        setTasks([...tasksData])
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getFromFirestore()
+  }, [user])
+
 
   // ContextVariable
 
   const contextVariables = {
+
     // Booleans
     writeTaskPrompt, setWriteTaskPrompt,
     editTaskPrompt, setEditTaskPrompt,
@@ -76,93 +280,49 @@ const Tasks = () => {
 
     // Arrays & Objects
     tasks, setTasks,
-    filteredTask, setFilteredTask,
-    updatedTasks, setUpdatedTasks,
+    filteredTasks, setFilteredTasks,
     selectedTasks, setSelectedTasks,
     changes, setChanges,
     sortingTypes, setSortingTypes,
+    type, setType,
+    sortOptions, setSortOptions,
+    openedTask, setOpenedTask,
 
     // Functions
-    unselectAll
+    unselectAll, handleSelectedTasks,
+    handleMarking, saveToDataBase,
+    writeTask: (data) => writeTask(data)
   }
 
-  // *-------------------- FUNCTIONS  -----------------------* 
-
-  function writeTask() {
-
-  }
-
-  function selectAll() {
-
-  }
-
-  function unselectAll() {
-
-  }
-
-  function updateTask() {
-
-  }
-
-  const saveToDataBase = () => {
-
-  }
-
-  // *-------------------- FUNCTIONS  -----------------------*
-
-  
-  // Effects
-
-  useEffect(()=>{
-      setPages(prev => prev.map((p)=>{
-          if(p.name === "Tasks") return {...p, ind: true}
-
-          return{...p}
-      }))
-
-      const getFromFirestore = async () => {
-        try {
-          const docRef = doc(db, "Users", "Mav3CkHiEkOgsggTfW0q0pioWFL2")
-          const data = await getDoc(docRef)
-
-          let tasksData = data.data().tasks
-          
-          
-          setTasks([...tasksData])
-        } catch (error) {
-          console.log(error)
-        }
-      }
-
-      getFromFirestore()
-  },[])
 
   return <>
     <tasksContext.Provider value={contextVariables}>
       <div className={s.tasksWrapper}>
         <div className={s.tasksEditor}>
           <h2 className={s.titleWrapper}>
-              Tasks 
-              <i className={`fa fa-bars`} onClick={()=>{sortingTypeBar ? setSortingTypeBar(false) : setSortingTypeBar(true)}}></i>
-              <SortingTypeBar />
+            Tasks
+            <i className={`fa fa-bars`} onClick={() => { sortingTypeBar ? setSortingTypeBar(false) : setSortingTypeBar(true) }}></i>
+            <SortingTypeBar />
           </h2>
 
           <TopOptions />
           <div className={s.searchWrapper}>
-              <div>
-                  <label htmlFor="searchBar">
-                      <i className={"fa fa-search"}></i>
-                  </label>
-                  <input
-                      id="search-bar"
-                      type="text"
-                      placeholder="Type Task..."/>
-                  <Button content={"Search"} className={s.Search_button} func={()=>{handleSearch(), handleIsSorting()}}/>
-              </div>
+            <div>
+              <label htmlFor="searchBar">
+                <i className={"fa fa-search"}></i>
+              </label>
+              <input
+                id="search-bar"
+                type="text"
+                ref={searchValue}
+                placeholder="Type Task..."
+                onChange={() => { handleSearch(), handleIsSorting() }} />
+              <Button content={"Search"} className={s.Search_button} />
+            </div>
           </div>
           <BottomOptions />
           <TasksContainer />
-
+          <WriteTaskPrompt setWriteTaskPrompt={setWriteTaskPrompt} />
           <EditTaskPrompt />
           <SortTaskPrompt />
         </div>

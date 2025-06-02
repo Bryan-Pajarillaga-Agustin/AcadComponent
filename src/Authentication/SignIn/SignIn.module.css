@@ -7,7 +7,7 @@
     --button-color: #B658E2;
 }
 
-.signUpWrapper {
+.signInWrapper {
     display: flex;
     flex-direction: column;
     color: var(--button-color);
@@ -16,6 +16,17 @@
     height: 100vh;
     font-family: "Kulim Park", sans-serif;
     font-weight: bold;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    width: 100vw;
+    background-color: white;
+}
+
+.signInWrapper .Link {
+    position: absolute;
+    right: 0;
 }
 
 .goToStartingPage {

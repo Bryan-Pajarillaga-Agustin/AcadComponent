@@ -1,28 +1,29 @@
-import { createContext, lazy, useState } from 'react'
+import { createContext, lazy, useEffect, useState } from 'react'
 import './App.css'
 
-// Navbar
-import NavBar from "./Navbar/Navbar"
-// Page Components
+// NavBar
+import NavBar from "./NavBar/NavBar"
 
 
-
-
-// Authentication Components
-import SignIn from "./Authentication/SignIn/SignIn"
-import SignUp from "./Authentication/SignUp/SignUp"
 // Other Components
 import Loading from './Components/Loading/Loading'
 import SaveChanges from './Components/SaveChanges/SaveChanges'
 // PageNotFound
 import PageNotFound from './PageNotFound/PageNotFound'
-import { BrowserRouter, Routes, Route} from "react-router-dom"
 
+import { BrowserRouter, Routes, Route} from "react-router-dom"
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './Firebase/Firebase'
+
+
+// Page Components
 const Home = lazy(()=> import("./Pages/Home/Home"))
 const Tasks = lazy(()=> import("./Pages/Tasks/Tasks"))
 const Folders = lazy(()=> import("./Pages/Folders/Folders"))
 const Contacts = lazy(()=> import("./Pages/Contacts/Contacts"))
 const Dashboard = lazy(()=> import('./Pages/Dashboard/Dashboard'))
+const SignIn = lazy(()=> import("./Authentication/SignIn/SignIn"))
+const SignUp = lazy(()=> import("./Authentication/SignUp/SignUp"))
 
 const router = [
   {path: "/AcadComponent/", element: <Home/>},
@@ -41,10 +42,11 @@ function App() {
   const [showSignUp, setShowSignUp] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const [showMakeUserSignIn, setShowMakeUserSignIn] = useState(false)
-  const [hideNavbar, setHideNavbar] = useState(false)
   const [hideSideBar, setHideSideBar] = useState(false)
   const [hideSaveChanges, setHideSaveChanges] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const [prevPage, setPrevPage] = useState("")
 
   const [user, setUser] = useState()
   const [userData, setUserData] = useState([])
@@ -54,55 +56,54 @@ function App() {
       ind: false, 
       icon: (<span className='material-icons'>home</span>),
       page: <Home />,
-      path: "/Acad/"
+      path: "/AcadComponent/"
     },
     {
       name: "Tasks", 
       ind: false, 
       icon: (<span className='fa fa-book'></span>),
       page: <Tasks />,
-      path: "/Acad/Tasks"
+      path: "/AcadComponent/Tasks"
     },
     {
       name: "Folders", 
       ind: false, 
       icon: (<span className='material-icons'>folder</span>),
       page: <Folders />,
-      path: "/Acad/Folders"
+      path: "/AcadComponent/Folders"
     },
     {
       name: "Contacts", 
       ind: false, 
       icon: (<span className='material-icons'>phone</span>),
       page: <Contacts />,
-      path: "/Acad/Contacts"
+      path: "/AcadComponent/Contacts"
     },
   ])
 
+  if(!user?.uid)
+    onAuthStateChanged(auth, (current)=>{
+    if(current?.uid != null){
+      setUser(current)
+    } 
+  })
+
   const contextVariables = {
     // Booleans
-    showSignUp,
-    setShowSignUp,
-    showLogin,
-    setShowLogin,
-    showMakeUserSignIn,
-    setShowMakeUserSignIn,
-    hideNavbar,
-    setHideNavbar,
-    hideSideBar,
-    setHideSideBar,
-    hideSaveChanges,
-    setHideSaveChanges,
-    loading,
-    setLoading,
+    showSignUp, setShowSignUp,
+    showLogin, setShowLogin,
+    showMakeUserSignIn, setShowMakeUserSignIn,
+    hideSideBar, setHideSideBar,
+    hideSaveChanges, setHideSaveChanges,
+    loading, setLoading,
+
+    // Strings and Integers 
+    prevPage, setPrevPage,
 
     // Arrays & Objects
-    user,
-    setUser,
-    userData,
-    setUserData,
-    pages,
-    setPages,
+    user, setUser,
+    userData, setUserData,
+    pages, setPages,
 
     // Functions
     pagination: (i)=>{
@@ -120,6 +121,10 @@ function App() {
     ))
   }
 
+  useEffect(()=>{
+    console.log(prevPage)
+  },[prevPage])
+
   return (
     <>
       <context.Provider value={contextVariables}>
@@ -132,8 +137,7 @@ function App() {
               )
             }
           </Routes>
-          <Loading></Loading>
-          <SaveChanges></SaveChanges>
+          <Loading />
         </BrowserRouter>
       </context.Provider>
     </>

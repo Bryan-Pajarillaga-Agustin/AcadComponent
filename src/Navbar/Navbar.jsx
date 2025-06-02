@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom'
 import Button from '../Components/Button'
 
 const NavBar = () => {
-    const { pages, setPages, hideSideBar, setHideSideBar } = useContext(context)
+    const { pages, setPages, 
+            user, setPrevPage, 
+            setHideSideBar, hideSideBar } = useContext(context)
     function changeTab(i) {
         setPages(prev => prev.map((tab, index) =>
             index == i ?
@@ -23,7 +25,7 @@ const NavBar = () => {
         console.log(hideSideBar)
     },[hideSideBar])
 
-    return (
+     return (
         <>
             <div className={s.navBarWrapper}>
                 <div className={s.left}>
@@ -41,7 +43,7 @@ const NavBar = () => {
                                         to={tab.path}
                                         key={tab.name}
                                         className={tab.ind ? `${s.ind} ${s.Links}` : `${s.notInd} ${s.Links}`}
-                                        onClick={() => changeTab(i)}
+                                        onClick={() => {changeTab(i), setPrevPage(tab.path)}}
                                     >
                                         <span className={s.content}>
                                             {tab.icon}
@@ -54,11 +56,19 @@ const NavBar = () => {
                         }
                     </ul>
                 </div>
-                <div className={s.right}>
-                    <button className={s.authButts}><Link to={"/Acad/SignIn"} className={s.Links}>Sign In</Link></button>
-                    <button className={s.authButts}><Link to={"/Acad/SignUp"} className={s.Links}>Sign Up</Link></button>
-                    <button className={s.HamburgerButt} onClick={()=>{setHideSideBar(false)}}><i className="fa fa-list-ul"></i></button>
-                </div>
+                {
+                    user?.uid ?
+                    <div className={s.right}>
+                        <button className={s.authButts}><Link to={"/AcadComponent/Dashboard"} className={s.Links} >Account</Link></button>
+                        <button className={`${s.authButts} ${s.signOut}`} >Log Out</button>
+                        <button className={s.HamburgerButt} onClick={()=>{setHideSideBar(false)}}><i className="fa fa-list-ul"></i></button>
+                    </div>  : 
+                    <div className={s.right}>
+                        <button className={s.authButts} ><Link to={"/AcadComponent/SignIn"} className={s.Links}>Sign In</Link></button>
+                        <button className={`${s.authButts} ${s.signUp}`} ><Link to={"/AcadComponent/SignUp"} className={s.Links}>Sign Up</Link></button>
+                        <button className={s.HamburgerButt} onClick={()=>{setHideSideBar(false)}}><i className="fa fa-list-ul"></i></button>
+                    </div>
+                }
             </div>
 
             <div className={hideSideBar == false ? s.sidebar : s.hideSideBar}>
@@ -70,7 +80,7 @@ const NavBar = () => {
                                 <Link
                                     to={link.path}
                                     key={link.path}
-                                    onClick={() => { changeTab(link, i) }}
+                                    onClick={() => { changeTab(link, i), setPrevPage(link.path) }}
                                     className={link.ind ? `${s.Links} ${s.indicated}` : `${s.Links} ${s.notIndicated}`}>
                                     {link.icon}
                                     <span>

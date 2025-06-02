@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { tasksContext } from '../Tasks'
 import { useContext } from 'react'
 import s from './SortingTypeBar.module.css'
 
 const SortingTypeBar = () => {
-  const {sortingTypeBar, setSortingTypeBar, sortingTypes, setSortingTypes, unselectAll, setType} = useContext(tasksContext)
+  const {sortingTypeBar, setSortingTypeBar, sortingTypes, setSortingTypes, unselectAll, setType, type} = useContext(tasksContext)
+
+  useEffect(()=>{
+    setSortingTypes(prev => prev.map(ea => 
+      type == ea.type ?
+      {...ea, ind: true} :
+      {...ea, ind: false}
+    ))
+  },[type])
   
 
   return (

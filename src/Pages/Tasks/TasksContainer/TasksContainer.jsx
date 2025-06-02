@@ -9,9 +9,10 @@ const TasksContainer = () => {
     const {
         searching, setSearching,
         tasks, setTasks,
-        filteredTask, setFilteredTask,
+        filteredTasks, setFilteredTasks,
         sorting, setSorting,
-        type, selecting, setSelecting
+        type, selecting, setSelecting,
+        handleSelectedTasks
     } = useContext(tasksContext)
 
     // Context
@@ -23,15 +24,11 @@ const TasksContainer = () => {
     const tasksContainerVariables = {
         searching, setSearching,
         tasks, setTasks,
-        filteredTask, setFilteredTask,
+        filteredTasks, setFilteredTasks,
         sorting, setSorting,
         type, selecting, setSelecting,
-        taskCheckboxes, setTaskCheckboxes
-    }
-
-    
-    function checkTask() {
-
+        taskCheckboxes, setTaskCheckboxes,
+        handleSelectedTasks
     }
 
 
@@ -44,9 +41,7 @@ const TasksContainer = () => {
 
     return (
         <tasksContainerContext.Provider value={tasksContainerVariables}>
-            <MapTasks>
-
-            </MapTasks>
+            <MapTasks />
         </tasksContainerContext.Provider>
     )
 }

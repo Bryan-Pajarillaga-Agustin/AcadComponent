@@ -1,9 +1,18 @@
-import React from 'react'
+import s from "./Loading.module.css"
+import { context } from "../../App"
+import { useContext } from "react"
 
 const Loading = () => {
-  return (
-    <div>Loading</div>
-  )
+  const {loading} = useContext(context)
+  if (loading)
+    return (
+      <div className={s.loadingWrapper}>
+        <div className={s.loadingBar}>
+
+        </div>
+        Loading...
+      </div>
+    )
 }
 
 export default Loading

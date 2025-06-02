@@ -5,10 +5,9 @@ import { tasksContext } from "../Tasks"
 
 const BottomOptions = () => {
 
-  const { handleSelectedTasks, selectedTask,
-          selectTask, setSelectTask,
+  const { handleSelectedTasks, selectedTasks,
           unselectAll, tasks, searching,
-          setUpdateTasks, filteredTasks,
+          setTasks, filteredTasks,
           setFilteredTasks, handleMarking,
           selecting, setSelecting } = useContext(tasksContext)
 
@@ -41,7 +40,7 @@ const BottomOptions = () => {
     }
 
     if (!searching) {
-      setUpdateTasks(prevCheckboxes => {
+      setTasks(prevCheckboxes => {
         return prevCheckboxes.map(task => {
           return { ...task, isChecked: true };;
         });
@@ -56,16 +55,16 @@ const BottomOptions = () => {
     let filtTask = filteredTasks
 
     for (let i in filtTask) { //deleting selected filtered task
-      for (let j in selectedTask) {
-        if (filtTask[i].id === selectedTask[j].id) {
+      for (let j in selectedTasks) {
+        if (filtTask[i].id === selectedTasks[j].id) {
           filtTask.splice(i, 1)
         }
       }
     }
 
     for (let i in tasks) { //deleting selected task from the original array
-      for (let j in selectedTask) {
-        if (data[i].id === selectedTask[j].id) {
+      for (let j in selectedTasks) {
+        if (data[i].id === selectedTasks[j].id) {
           data.splice(i, 1)
         }
       }
@@ -94,7 +93,7 @@ const BottomOptions = () => {
           <div className={s.right}>
             <Button icon={(<i className={`fa fa-trash`}></i>)}
               element={(<span className={s.fullContent}>Delete</span>)}
-              func={() => { selectTask ? del() : console.log("No update") }} />
+              func={() => { selectedTasks ? del() : console.log("No update") }} />
             <Button icon={(
               <i className={`fa fa-close`}></i>)}
               element={(<span className={s.fullContent}>Cancel</span>)}

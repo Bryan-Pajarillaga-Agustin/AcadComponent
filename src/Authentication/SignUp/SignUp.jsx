@@ -6,6 +6,7 @@ import FormFour from "./FormFour/FormFour"
 import s from "./SignUp.module.css"
 import Button from "../../Components/Button"
 import { context } from "../../App"
+import { Link } from "react-router-dom"
 // import { createUserWithEmailAndPassword } from "firebase/auth"
 // import { doc, setDoc } from "firebase/firestore"
 // import { auth, db } from "../../Firebase/Firebase"
@@ -14,7 +15,10 @@ export const signUpContext = createContext()
 
 const SignUp = () => {
 
-    const { setShowSignInPrompt, showSignUpPrompt, setShowSignUpPrompt, setLoading, setContinueAs, setUser, setPage } = useContext(context)
+    const { setShowSignInPrompt, showSignUpPrompt, 
+            setShowSignUpPrompt, setLoading, 
+            setContinueAs, setUser, 
+            prevPage, setHideNavBar} = useContext(context)
 
     // Refs
     const passwordInput = useRef(null)
@@ -108,44 +112,44 @@ const SignUp = () => {
     }
 
     const handleIndication = async (par) => {
-        // const arrayOfInputs = getInputs()
-        // let testWarning
+        const arrayOfInputs = getInputs()
+        let testWarning
 
-        // if (indicated == 0) {
-        //     testWarning = handleWarning(arrayOfInputs[0], arrayOfInputs[1], indicated)
-        //     if (!testWarning) {
-        //         setLoading(true)
-        //         try {
-        //             await createUserWithEmailAndPassword(auth, arrayOfInputs[0][0], arrayOfInputs[0][1])
-        //             setUser(auth.currentUser)
-        //             await setDoc(doc(db, "Users", auth.currentUser?.uid), {
-        //                 email: arrayOfInputs[0][0]
-        //             })
-        //             setIndication(indicated + 1)
-        //         } catch (error) {
-        //             console.log(error)
-        //             if (error.code == "auth/email-already-in-use") {
-        //                 arrayOfInputs[1][0].innerText = "Email is already taken."
-        //             }
-        //         }
+        if (indicated == 0) {
+            testWarning = handleWarning(arrayOfInputs[0], arrayOfInputs[1], indicated)
+            if (!testWarning) {
+                setLoading(true)
+                try {
+                    await createUserWithEmailAndPassword(auth, arrayOfInputs[0][0], arrayOfInputs[0][1])
+                    setUser(auth.currentUser)
+                    await setDoc(doc(db, "Users", auth.currentUser?.uid), {
+                        email: arrayOfInputs[0][0]
+                    })
+                    setIndication(indicated + 1)
+                } catch (error) {
+                    console.log(error)
+                    if (error.code == "auth/email-already-in-use") {
+                        arrayOfInputs[1][0].innerText = "Email is already taken."
+                    }
+                }
 
-        //         setLoading(false)
+                setLoading(false)
 
-        //     }
-        // } else if (indicated == 1) {
-        //     testWarning = handleWarning(arrayOfInputs[0], arrayOfInputs[1], indicated)
-        // } else if (indicated == 2) {
+            }
+        } else if (indicated == 1) {
+            testWarning = handleWarning(arrayOfInputs[0], arrayOfInputs[1], indicated)
+        } else if (indicated == 2) {
 
-        //     testWarning = handleWarning(arrayOfInputs[0], arrayOfInputs[1], indicated)
-        // } else if (indicated == 3 && par == "Submit") {
-        //     createUserFromFirebase(arrayOfInputs[0])
-        // }
+            testWarning = handleWarning(arrayOfInputs[0], arrayOfInputs[1], indicated)
+        } else if (indicated == 3 && par == "Submit") {
+            createUserFromFirebase(arrayOfInputs[0])
+        }
 
-        // if (par == "next" && indicated != 3 && !testWarning) {
-        //     setIndication(indicated + 1)
-        // } else if (par == "back" && indicated != 1) {
-        //     setIndication(indicated - 1)
-        // }
+        if (par == "next" && indicated != 3 && !testWarning) {
+            setIndication(indicated + 1)
+        } else if (par == "back" && indicated != 1) {
+            setIndication(indicated - 1)
+        }
     }
 
     const handleWarning = (arr1, arr2, ind) => {
@@ -244,38 +248,38 @@ const SignUp = () => {
     }
 
     const createUserFromFirebase = async (arr1) => {
-        // setLoading(true)
-        // try {
-        //     const user = auth.currentUser
-        //     await setDoc(doc(db, "Users", user.uid), {
+        setLoading(true)
+        try {
+            const user = auth.currentUser
+            await setDoc(doc(db, "Users", user.uid), {
 
-        //         favSubjects: selectedSubjects,
-        //         usingAs: usage,
-        //         perInfo: {
-        //             school: arr1[4],
-        //             name: arr1[3],
-        //             grSec: arr1[5],
-        //             age: "",
-        //             bDay: "",
-        //             gender: "",
-        //             hobbies: "",
-        //             placeOfBirth: "",
-        //             skills: "",
-        //             contacts: {
-        //                 gMail: "",
-        //                 number: "",
-        //                 faceBook: "",
-        //             },
-        //             purpose: usingAsInput?.current.value,
-        //         }
-        //     })
-        //     setShowSignUpPrompt(false)
-        //     handleInputs()
-        //     setContinueAs(true)
-        // } catch (error) {
-        //     console.log(error.message)
-        // }
-        // setLoading(false)
+                favSubjects: selectedSubjects,
+                usingAs: usage,
+                perInfo: {
+                    school: arr1[4],
+                    name: arr1[3],
+                    grSec: arr1[5],
+                    age: "",
+                    bDay: "",
+                    gender: "",
+                    hobbies: "",
+                    placeOfBirth: "",
+                    skills: "",
+                    contacts: {
+                        gMail: "",
+                        number: "",
+                        faceBook: "",
+                    },
+                    purpose: usingAsInput?.current.value,
+                }
+            })
+            setShowSignUpPrompt(false)
+            handleInputs()
+            setContinueAs(true)
+        } catch (error) {
+            console.log(error.message)
+        }
+        setLoading(false)
     }
 
     function handleInputs() {
@@ -333,7 +337,9 @@ const SignUp = () => {
         <>
             <signUpContext.Provider value={signUpVariables}>
                 <div className={s.signUpWrapper}>
-                    <Button func={() => { setShowSignUpPrompt(false), handleInputs(), setPage(1) }} content={"X"} className={s.goToStartingPage}></Button>
+                    <Link to={prevPage != "" ? prevPage : "/AcadComponent/"} className={s.Link}>
+                        <Button func={() => { handleInputs()}} content={"X"} className={s.goToStartingPage}></Button>
+                    </Link>
                     <form onSubmit={(e) => { e.preventDefault() }} className={s.forms}>
                         <header>SIGN UP</header>
                         <div className={s.toBottom}>
@@ -352,7 +358,9 @@ const SignUp = () => {
                                     <div className={indicated == 2 ? s.indicated : s.notIndicated}></div>
                                     <div className={indicated == 3 ? s.indicated : s.notIndicated}></div>
                                 </div>
-                                <h4 id={s.SignUp} onClick={() => { setShowSignInPrompt(true), setShowSignUpPrompt(false), handleInputs() }}> <a>Already Have an Account?</a> </h4>
+                                <h4 id={s.SignUp} onClick={() => { handleInputs() }}>
+                                    <Link to={"/AcadComponent/SignIn"} className={s.linkBottom}>Already Have An Account?</Link>
+                                </h4>
                             </div>
                         </div>
                     </form>
