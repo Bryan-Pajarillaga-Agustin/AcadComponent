@@ -1,6 +1,4 @@
-
-
-.Signing_Out_Wrapper, .Hide_Signing_Out_Wrapper {
+.Changes_Wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,17 +9,10 @@
     height: 100vh;
     font-family: Kanit;
     background-color: #a1a3a682;
+    z-index: 2;
 }
 
-.Hide_Signing_Out_Wrapper {
-    display: none;
-}
-
-.Signing_Out_Wrapper{
-    display: flex;
-}
-
-.Signing_Out_Box {
+.Changes_Box {
     display: flex;
     flex-direction: column;
     width: 200px;
@@ -46,38 +37,19 @@
 
 .Top > i {
     font-size: 5rem;
-    background-color: white;
+    background-color: transparent;
     padding: 1rem;
     width: 5rem;
     height: 5rem;
     text-align: center;
     border-radius: 50%;
-    border: .5rem solid #e57513;
-    box-shadow: 0 5px 10px -3px #ffffffb6;
     margin-bottom: 1rem;
-}
-
-.Top > div {
-    font-size: 5rem;
-    padding: 1rem;
-    width: 5rem;
-    height: 5rem;
-    text-align: center;
-    border-radius: 50%;
-    border: .5rem solid #e57513;
-    box-shadow: 0 5px 10px -3px #ffffffb6;
-    margin-bottom: 1rem;
-    background-size: cover;
-    background-position: center;
 }
 
 .Top > h3 {
     color: white;
     text-align: center;
-}
-
-.Top > h3:nth-of-type(2) {
-    text-decoration: underline;
+    
 }
 
 .Options {

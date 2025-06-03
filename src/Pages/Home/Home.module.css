@@ -32,7 +32,7 @@
 
 .homeWrapper .left .wrapTop > h1 {
     color: var(--color-1); 
-    font-size: 3.5rem;
+    font-size: clamp(1.5rem, 5vw, 3.5rem);
     display: flex;
     align-items: center;
 }    
@@ -112,6 +112,7 @@
     .homeWrapper {
         flex-direction: column-reverse;
         margin-top: 0;
+        height: 100vh;
     }
 
     .homeWrapper .left {
@@ -140,6 +141,8 @@
     .homeWrapper .right{
         width: 100vw;
         height: fit-content;
+        margin-top: 1rem;
+        height: 50vh;
     }
 
 

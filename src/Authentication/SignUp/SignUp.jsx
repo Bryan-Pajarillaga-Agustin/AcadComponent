@@ -6,19 +6,19 @@ import FormFour from "./FormFour/FormFour"
 import s from "./SignUp.module.css"
 import Button from "../../Components/Button"
 import { context } from "../../App"
-import { Link } from "react-router-dom"
-// import { createUserWithEmailAndPassword } from "firebase/auth"
-// import { doc, setDoc } from "firebase/firestore"
-// import { auth, db } from "../../Firebase/Firebase"
+import { Link, useNavigate } from "react-router-dom"
+import { createUserWithEmailAndPassword } from "firebase/auth"
+import { doc, setDoc } from "firebase/firestore"
+import { auth, db } from "../../Firebase/Firebase"
 
 export const signUpContext = createContext()
 
 const SignUp = () => {
 
-    const { setShowSignInPrompt, showSignUpPrompt, 
-            setShowSignUpPrompt, setLoading, 
-            setContinueAs, setUser, 
-            prevPage, setHideNavBar} = useContext(context)
+    const { setLoading, setContinueAs, 
+            setUser, prevPage} = useContext(context)
+
+    const navigate = useNavigate()
 
     // Refs
     const passwordInput = useRef(null)
@@ -273,7 +273,7 @@ const SignUp = () => {
                     purpose: usingAsInput?.current.value,
                 }
             })
-            setShowSignUpPrompt(false)
+            navigate(prevPage)
             handleInputs()
             setContinueAs(true)
         } catch (error) {

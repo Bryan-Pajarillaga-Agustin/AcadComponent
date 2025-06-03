@@ -180,7 +180,7 @@ const Folders = () => {
         setPages(prev => prev.map((p)=>{
             if(p.name === "Folders") return {...p, ind: true}
 
-            return{...p}
+            return{...p, ind: false}
         }))
     },[])
 

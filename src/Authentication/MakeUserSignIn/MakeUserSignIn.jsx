@@ -1,8 +1,13 @@
 import s from "./MakeUserSignIn.module.css"
 import Button from "../../Components/Button"
+import { useContext } from "react"
+import { context } from "../../App"
+import { Link } from "react-router-dom"
 
-const MakeUserSignIn = ({ showMakeUserSignIn, setShowMakeUserSignIn, setPage, setShowSignInPrompt, setShowSignUpPrompt, user }) => {
-    
+const MakeUserSignIn = () => {
+    const { showMakeUserSignIn, setShowMakeUserSignIn, 
+            setPage, user } = useContext(context)
+
     function handleExitMakeUserSignIn(){
         setShowMakeUserSignIn(false)
         setPage(1)
@@ -16,11 +21,14 @@ const MakeUserSignIn = ({ showMakeUserSignIn, setShowMakeUserSignIn, setPage, se
     
     return (
         <>
-            <div className={showMakeUserSignIn && !user ? s.Make_User_Sign_In_Wrapper : s.Hide_Make_User_Sign_In_Wrapper}>
-                <div className={s.Make_User_Sign_In_Box}>
-                    <Button icon={(<i className="fa fa-close"></i>)}
-                            className={s.Hide_Prompt_Button}
-                            func={()=>{handleExitMakeUserSignIn()}}/>
+            <div className={showMakeUserSignIn && !user ? s.makeUserSignInWrapper : s.hideMakeUserSignInWrapper}>
+                <div className={s.makeUserSignInBox}>
+                    <Link
+                        className={s.hidePromptButton}
+                        to={"/AcadComponent/"}
+                        onClick={()=>{handleExitMakeUserSignIn()}}>
+                        <i className="fa fa-close"></i>
+                    </Link>
                     <div className={s.Images}>
                         <img src="./cat.png" />
                         <img src="./!.png" />
@@ -28,18 +36,18 @@ const MakeUserSignIn = ({ showMakeUserSignIn, setShowMakeUserSignIn, setPage, se
                     <h1>You're not Signed In !</h1>
                     <p>Create an account, log in and get free access to the advanced To-Do List Web Application</p>
                     <div className={s.Buttons}>
-                        <Button 
-                                content={"Sign Up"}
-                                func={()=>{
-                                    setShowSignUpPrompt(true)
-                                    setShowMakeUserSignIn(false)
-                                }}/>
-                        <Button 
-                                content={"Sign In"}
-                                func={()=>{
-                                    setShowSignInPrompt(true)
-                                    setShowMakeUserSignIn(false)
-                                }}/>
+                        <Link
+                            className={s.Links}
+                            to={"/AcadComponent/SignUp"}
+                            onClick={()=>{setShowMakeUserSignIn(false)}}>
+                                Sign Up
+                        </Link>
+                        <Link
+                            className={s.Links}
+                            to={"/AcadComponent/SignIn"}
+                            onClick={()=>{setShowMakeUserSignIn(false)}}>
+                                Sign In
+                        </Link>
                     </div>
                 </div>
             </div>

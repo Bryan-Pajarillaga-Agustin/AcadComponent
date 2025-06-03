@@ -116,26 +116,32 @@ a {
     margin-right: 1rem;
 }
 
-.navBarWrapper .right .authButts>.Links {
-    color: inherit;
-}
-
-.navBarWrapper .right>button:nth-child(1) {
+.navBarWrapper .right .Links>button:nth-child(1) {
     background-color: var(--nav-sigIn);
     color: var(--nav-bg-color);
 }
 
-.navBarWrapper .right>button:nth-child(1):hover {
+.navBarWrapper .right .Links>button:nth-child(1):hover {
     color: var(--nav-sigIn);
     background-color: var(--buttBgColor);
 }
 
-.navBarWrapper .right>button:nth-child(2) {
+.navBarWrapper .right .Links:nth-child(2)>button {
     background-color: black;
     color: white;
 }
 
-.navBarWrapper .right>button:nth-child(2):hover {
+.navBarWrapper .right .Links:nth-child(2):hover>button {
+    color: black;
+    background-color: white;
+}
+
+.navBarWrapper .right .signOut {
+    background-color: black;
+    color: white;
+}
+
+.navBarWrapper .right .signOut:nth-child(2):hover {
     color: black;
     background-color: white;
 }

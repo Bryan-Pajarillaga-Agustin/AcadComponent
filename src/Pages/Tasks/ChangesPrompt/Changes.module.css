@@ -1,10 +1,8 @@
-
-
-.Signing_Out_Wrapper, .Hide_Signing_Out_Wrapper {
+.Changes_Wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
@@ -13,15 +11,8 @@
     background-color: #a1a3a682;
 }
 
-.Hide_Signing_Out_Wrapper {
-    display: none;
-}
 
-.Signing_Out_Wrapper{
-    display: flex;
-}
-
-.Signing_Out_Box {
+.Changes_Box {
     display: flex;
     flex-direction: column;
     width: 200px;
@@ -35,6 +26,22 @@
     overflow: hidden;
 }
 
+.Changes_Box .closeButton {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    padding: .2rem .4rem;
+    border-radius: .5rem;
+    border: none;
+    font-size: 1.25rem;
+    color: white;
+    background-color: #c7c5c56c;
+}
+
+.Changes_Box .closeButton:hover {
+    background-color: #e57513;
+}
+
 .Top {
     height: 85%;
     display: flex;
@@ -46,38 +53,19 @@
 
 .Top > i {
     font-size: 5rem;
-    background-color: white;
+    background-color: transparent;
     padding: 1rem;
     width: 5rem;
     height: 5rem;
     text-align: center;
     border-radius: 50%;
-    border: .5rem solid #e57513;
-    box-shadow: 0 5px 10px -3px #ffffffb6;
     margin-bottom: 1rem;
-}
-
-.Top > div {
-    font-size: 5rem;
-    padding: 1rem;
-    width: 5rem;
-    height: 5rem;
-    text-align: center;
-    border-radius: 50%;
-    border: .5rem solid #e57513;
-    box-shadow: 0 5px 10px -3px #ffffffb6;
-    margin-bottom: 1rem;
-    background-size: cover;
-    background-position: center;
 }
 
 .Top > h3 {
     color: white;
     text-align: center;
-}
-
-.Top > h3:nth-of-type(2) {
-    text-decoration: underline;
+    
 }
 
 .Options {

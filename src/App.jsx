@@ -2,18 +2,19 @@ import { createContext, lazy, useEffect, useState } from 'react'
 import './App.css'
 
 // NavBar
-import NavBar from "./NavBar/NavBar"
-
+import NavBar from './Navbar/Navbar'
 
 // Other Components
 import Loading from './Components/Loading/Loading'
-import SaveChanges from './Components/SaveChanges/SaveChanges'
 // PageNotFound
 import PageNotFound from './PageNotFound/PageNotFound'
 
-import { BrowserRouter, Routes, Route} from "react-router-dom"
+import { BrowserRouter, Routes, Route, useNavigate} from "react-router-dom"
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from './Firebase/Firebase'
+import { auth, db } from './Firebase/Firebase'
+import VerifySigningOut from './Authentication/VerifySigningOut/VerifySigningOut'
+import { doc, getDoc } from 'firebase/firestore'
+import MakeUserSignIn from './Authentication/MakeUserSignIn/MakeUserSignIn'
 
 
 // Page Components
@@ -39,17 +40,23 @@ const router = [
 export const context = createContext()
 
 function App() {
+
   const [showSignUp, setShowSignUp] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const [showMakeUserSignIn, setShowMakeUserSignIn] = useState(false)
   const [hideSideBar, setHideSideBar] = useState(false)
   const [hideSaveChanges, setHideSaveChanges] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isSigningOut, setIsSigningOut] = useState(false)
+  const [continueAs, setContinueAs] = useState(false)
+  const [saveChanges, setSaveChanges] = useState(false)
 
   const [prevPage, setPrevPage] = useState("")
 
   const [user, setUser] = useState()
-  const [userData, setUserData] = useState([])
+  const [userData, setUserData] = useState({})
+  const [tasksCache, setTasksCache] = useState([])
+  const [changes, setChanges] = useState()
   const [pages, setPages] = useState([
     {
       name: "Home", 
@@ -85,10 +92,24 @@ function App() {
     onAuthStateChanged(auth, (current)=>{
     if(current?.uid != null){
       setUser(current)
+      
+      getDataFromFireStore(current.uid)
     } 
   })
 
+  const getDataFromFireStore = async (uid) => {
+    const docRef = doc(db, "Users", uid)
+    try {
+      const data = await getDoc(docRef)
+      const getData = data.data()
+      setUserData(getData)
+    } catch (error) {
+      console.log(error.code)
+    }
+  }
+
   const contextVariables = {
+
     // Booleans
     showSignUp, setShowSignUp,
     showLogin, setShowLogin,
@@ -96,19 +117,22 @@ function App() {
     hideSideBar, setHideSideBar,
     hideSaveChanges, setHideSaveChanges,
     loading, setLoading,
-
+    isSigningOut, setIsSigningOut,
+    continueAs, setContinueAs,
+    saveChanges, setSaveChanges,
+    
     // Strings and Integers 
     prevPage, setPrevPage,
 
     // Arrays & Objects
     user, setUser,
     userData, setUserData,
+    tasksCache, setTasksCache,
     pages, setPages,
-
+    changes, setChanges,
     // Functions
     pagination: (i)=>{
       handlePages(i)
-      console.log(i)
     }
   }
 
@@ -122,9 +146,9 @@ function App() {
   }
 
   useEffect(()=>{
-    console.log(prevPage)
-  },[prevPage])
-
+    setChanges(JSON.parse(localStorage.getItem("Changes")))
+  },[])
+  
   return (
     <>
       <context.Provider value={contextVariables}>
@@ -137,6 +161,8 @@ function App() {
               )
             }
           </Routes>
+          <VerifySigningOut />
+          <MakeUserSignIn />
           <Loading />
         </BrowserRouter>
       </context.Provider>

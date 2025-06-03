@@ -2,28 +2,31 @@ import { useState } from 'react'
 import s from './NavBar.module.css'
 import { useContext, useEffect } from 'react'
 import { context } from '../App'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from '../Components/Button'
 
 const NavBar = () => {
+    const navigation = useNavigate()
     const { pages, setPages, 
             user, setPrevPage, 
-            setHideSideBar, hideSideBar } = useContext(context)
-    function changeTab(i) {
-        setPages(prev => prev.map((tab, index) =>
-            index == i ?
-                { ...tab, ind: true } :
-                { ...tab, ind: false }
-        ))
+            setHideSideBar, hideSideBar,
+            setIsSigningOut, changes,
+            setSaveChanges, prevPage } = useContext(context)
+    function changeTab(i, path) {
+        
+
+        if(changes && pages[1].ind) {
+            setSaveChanges(true)
+        } else {
+            navigation(path)
+            setPages(prev => prev.map((tab, index) =>
+                index == i ?
+                    { ...tab, ind: true } :
+                    { ...tab, ind: false }
+            ))
+        }
+        
     }
-
-    function handlePagination() {
-
-    }
-
-    useEffect(()=>{
-        console.log(hideSideBar)
-    },[hideSideBar])
 
      return (
         <>
@@ -39,18 +42,17 @@ const NavBar = () => {
                         {
                             pages?.map((tab, i) => {
                                 return (
-                                    <Link
-                                        to={tab.path}
+                                    <li
                                         key={tab.name}
                                         className={tab.ind ? `${s.ind} ${s.Links}` : `${s.notInd} ${s.Links}`}
-                                        onClick={() => {changeTab(i), setPrevPage(tab.path)}}
+                                        onClick={() => {changeTab(i, tab.path), setPrevPage(tab.path)}}
                                     >
                                         <span className={s.content}>
                                             {tab.icon}
                                             {tab.name}
                                         </span>
                                         <span className={s.indicator}></span>
-                                    </Link>
+                                    </li>
                                 )
                             })
                         }
@@ -59,13 +61,18 @@ const NavBar = () => {
                 {
                     user?.uid ?
                     <div className={s.right}>
-                        <button className={s.authButts}><Link to={"/AcadComponent/Dashboard"} className={s.Links} >Account</Link></button>
-                        <button className={`${s.authButts} ${s.signOut}`} >Log Out</button>
+                        <Link to={"/AcadComponent/Dashboard"} className={s.Links} ><button className={s.authButts}>Account</button></Link>
+                        <button className={`${s.authButts} ${s.signOut}`} onClick={()=>{setIsSigningOut(true)}} >Log Out</button>
                         <button className={s.HamburgerButt} onClick={()=>{setHideSideBar(false)}}><i className="fa fa-list-ul"></i></button>
                     </div>  : 
                     <div className={s.right}>
-                        <button className={s.authButts} ><Link to={"/AcadComponent/SignIn"} className={s.Links}>Sign In</Link></button>
-                        <button className={`${s.authButts} ${s.signUp}`} ><Link to={"/AcadComponent/SignUp"} className={s.Links}>Sign Up</Link></button>
+                        <Link to={"/AcadComponent/SignIn"} className={s.Links}>
+                            <button className={s.authButts} >Sign In</button>
+                        </Link>
+                        <Link to={"/AcadComponent/SignUp"} className={s.Links}>
+                            <button className={`${s.authButts} ${s.signUp}`} >Sign Up</button>
+                        </Link>
+                        
                         <button className={s.HamburgerButt} onClick={()=>{setHideSideBar(false)}}><i className="fa fa-list-ul"></i></button>
                     </div>
                 }
@@ -77,7 +84,7 @@ const NavBar = () => {
                     {
                         pages.map((link, i) => {
                             return (
-                                <Link
+                                <li
                                     to={link.path}
                                     key={link.path}
                                     onClick={() => { changeTab(link, i), setPrevPage(link.path) }}
@@ -87,7 +94,7 @@ const NavBar = () => {
                                         {link.name}
                                         <span className={s.indication}></span>
                                     </span>
-                                </Link>
+                                </li>
                             )
                         })
                     }

@@ -6,7 +6,7 @@ import { tasksContext } from '../../Tasks'
 const Task = ({ task, i }) => {
     const { selecting ,searching, 
             tasks, setTasks, 
-            setFilteredTask, handleSelectedTasks } = useContext(tasksContainerContext)
+            setFilteredTasks, handleSelectedTasks } = useContext(tasksContainerContext)
     
     const {setOpenedTask, setEditing} = useContext(tasksContext)
         
@@ -39,7 +39,7 @@ const Task = ({ task, i }) => {
         ))
 
         if (searching) 
-            setFilteredTask(prevCheckboxes => prevCheckboxes.map(task => 
+            setFilteredTasks(prevCheckboxes => prevCheckboxes.map(task => 
                 task.id === taskId ? 
                 { ...task, isChecked: !task.isChecked ? true : false } :
                 {...task}

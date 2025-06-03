@@ -9,7 +9,7 @@ import SortTaskPrompt from './SortTaskPrompt/SortTaskPrompt'
 import TasksContainer from './TasksContainer/TasksContainer'
 import TopOptions from './TopOptions/TopOptions'
 import WriteTaskPrompt from './WriteTaskPrompt/WriteTaskPrompt'
-import SaveChanges from '../../Components/SaveChanges/SaveChanges'
+import SaveChanges from './ChangesPrompt/Changes'
 
 // Style 
 import s from "./Tasks.module.css"
@@ -24,8 +24,10 @@ export const tasksContext = createContext()
 import { db } from '../../Firebase/Firebase'
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore'
 const Tasks = () => {
+  const loc = JSON.parse(localStorage.getItem("Changes"))
+
   // Context
-  const { user, setHideNavBar, setHideSideBar, setPages, setLoading } = useContext(context)
+  const { user, setShowMakeUserSignIn, setPages, setLoading, changes, setChanges, setTasksCache, tasksCache } = useContext(context)
 
   // Refs
   const searchValue = useRef()
@@ -45,14 +47,13 @@ const Tasks = () => {
 
   // Numbers 
 
-  const [numberOfChanges, setNumberOfChanges] = useState(null)
+  const [numberOfChanges, setNumberOfChanges] = useState(loc ? loc.length - 1 : null)
 
   // Arrays and Objects
   const [tasks, setTasks] = useState([])
-  const [updatedTasks, setUpdatedTasks] = useState(tasks.length != 0 ? [...tasks] : [])
+  const [tasksOnType, setTasksOnType] = useState(tasks.length != 0 ? [...tasks] : [])
   const [filteredTasks, setFilteredTasks] = useState([])
   const [selectedTasks, setSelectedTasks] = useState([])
-  const [changes, setChanges] = useState([])
   const [openedTask, setOpenedTask] = useState({})
   const [sortingTypes, setSortingTypes] = useState([
     { type: "Pending", ind: true },
@@ -170,6 +171,7 @@ const Tasks = () => {
         setFilteredTasks([...filtData]);
 
       setTasks([...checkedUpData, ...unCheckedUpData]);
+      setTasksCache([...checkedUpData, ...unCheckedUpData])
     }
 
   }
@@ -201,7 +203,6 @@ const Tasks = () => {
   async function saveToDataBase() {
     const userUID = user?.uid.toString();
     const docRef = doc(db, `Users/${userUID}`);
-
     setLoading(true)
     let changes = JSON.parse(localStorage.getItem("Changes"))
     changes = [...changes[numberOfChanges]]
@@ -213,6 +214,7 @@ const Tasks = () => {
       await updateDoc(docRef, { tasks: changes });  //Update from local state after successful write
       setNumberOfChanges(null)
       setTasks([...changes])
+      unselectAll()
       localStorage.removeItem("Changes")
     } catch (error) {
       alert(error.message)
@@ -227,36 +229,34 @@ const Tasks = () => {
   // Effects
 
   useEffect(() => {
-    setPages(prev => prev.map((p) => {
-      if (p.name === "Tasks") return { ...p, ind: true }
+    if (user?.uid && tasksCache?.length == 0) {
+      setShowMakeUserSignIn(false)
+      setPages(prev => prev.map((p) => {
+        return p.name === "Tasks" ?
+          { ...p, ind: true } :
+          { ...p }
+      }))
 
-      return { ...p }
-    }))
+      const getFromFirestore = async () => {
+        try {
+          const docRef = doc(db, "Users", user?.uid)
+          const data = await getDoc(docRef)
 
-    const getFromFirestore = async () => {
-      try {
-        const docRef = doc(db, "Users", user?.uid)
-        const data = await getDoc(docRef)
+          let tasksData = data.data().tasks
 
-        let tasksData = data.data().tasks
 
-        for (let i in tasksData) {
-          tasksData[i].cName = [
-            JSON.stringify(styles.col),
-            JSON.stringify(styles.br),
-            JSON.stringify(styles.fs),
-            JSON.stringify(styles.bgC),
-            JSON.stringify(styles.fW),
-          ]
+          setTasks([...tasksData])
+          setTasksCache([...tasksData])
+        } catch (error) {
+          console.log(error)
         }
-
-        setTasks([...tasksData])
-      } catch (error) {
-        console.log(error)
       }
+
+      getFromFirestore()
+    } else {
+      setShowMakeUserSignIn(true)
     }
 
-    getFromFirestore()
   }, [user])
 
 
@@ -281,6 +281,7 @@ const Tasks = () => {
     // Arrays & Objects
     tasks, setTasks,
     filteredTasks, setFilteredTasks,
+    tasksOnType, setTasksOnType,
     selectedTasks, setSelectedTasks,
     changes, setChanges,
     sortingTypes, setSortingTypes,
@@ -293,6 +294,30 @@ const Tasks = () => {
     handleMarking, saveToDataBase,
     writeTask: (data) => writeTask(data)
   }
+
+  useEffect(() => {
+    if (searchValue.current.value == "") {
+      setSearching(false)
+      setFilteredTasks(null)
+    } else {
+      setSearching(true)
+      setFilteredTasks(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
+      console.log(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
+      setSorting(false)
+    }
+  }, [tasks])
+
+  useEffect(() => {
+    if (changes?.length != 0) {
+      let data = changes
+      if (data != null) setTasks(data ? [...data[data.length-1]] : null)
+    } 
+
+    if(tasksCache) {
+      console.log(tasksCache)
+      setTasks(tasksCache)
+    }
+  }, [changes, tasksCache])
 
 
   return <>
@@ -324,6 +349,7 @@ const Tasks = () => {
           <TasksContainer />
           <WriteTaskPrompt setWriteTaskPrompt={setWriteTaskPrompt} />
           <EditTaskPrompt />
+          <SaveChanges />
           <SortTaskPrompt />
         </div>
       </div>

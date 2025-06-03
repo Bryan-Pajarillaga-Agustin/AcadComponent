@@ -2,8 +2,11 @@ import s from "./VerifySigningOut.module.css"
 import Button from "../../Components/Button"
 import { signOut } from "firebase/auth"
 import { auth } from "../../Firebase/Firebase"
-const SigningOut = ({isSigningOut, setIsSigningOut, setLoading, setUser}) => {
-    
+import { useContext, useEffect } from "react"
+import { context } from "../../App"
+const VerifySigningOut = () => {
+    const {isSigningOut, setIsSigningOut, setLoading, user, setUser, userData} = useContext(context)
+
     const handleSignOut = async () => { 
         setLoading(true)
         try {
@@ -18,11 +21,16 @@ const SigningOut = ({isSigningOut, setIsSigningOut, setLoading, setUser}) => {
         }
     }
 
+
     if(isSigningOut) return  (
         <div className={isSigningOut ? s.Signing_Out_Wrapper : s.Hide_Signing_Out_Wrapper}>
             <div className={s.Signing_Out_Box}>
                 <div className={s.Top}>
-                    <i className='fa fa-user'></i>
+                    {
+                        userData?.profPic ?
+                        <div style={{backgroundImage: `url(${userData.profPic})`}}></div> :
+                        <i className='fa fa-user'></i>
+                    }
                     <h3>Would You Like To Sign Out?</h3>
                 </div>
                 <div className={s.Options}>
@@ -38,4 +46,4 @@ const SigningOut = ({isSigningOut, setIsSigningOut, setLoading, setUser}) => {
     )
 }
 
-export default SigningOut
+export default VerifySigningOut

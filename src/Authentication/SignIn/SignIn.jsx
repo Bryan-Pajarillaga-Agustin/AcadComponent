@@ -7,14 +7,15 @@ import { auth, db } from "../../Firebase/Firebase.js"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import { doc, getDoc } from "firebase/firestore"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export default function SignIn() {
-    const { setPage, setUser,
-            setShowSignInPrompt, setShowSignUpPrompt, 
-            setLoading, setContinueAs, 
-            getAccountInformation, setHideNavBar,
+    const { setUser, setShowSignInPrompt, 
+            setShowSignUpPrompt, setLoading,
+            setContinueAs, setHideNavBar,
             prevPage } = useContext(context)
+
+    const navigate = useNavigate()
 
     const [showPass, setShowPass] = useState(false)
     const [data, setdata] = useState()
@@ -78,11 +79,10 @@ export default function SignIn() {
                 )
                 clearInputs()
                 setUser(auth.currentUser)
-                setShowSignInPrompt(false)
                 setContinueAs(true)
-                getAccountInformation()
+                navigate(prevPage)
             } catch (error) {
-                console.log(error.code)
+                console.log(error)
                 if (error.code == 'auth/invalid-email') {
                     refInvalid1.current.textContent = "Invalid email/Email doesn't exist."
                 }
@@ -114,11 +114,12 @@ export default function SignIn() {
                 setShowSignUpPrompt(true)
             }
             setContinueAs(true)
-            getAccountInformation()
+            navigate(prevPage)
         } catch (error) {
             console.log(error)
         }
         setLoading(false)
+        
     }
 
 
@@ -126,7 +127,7 @@ export default function SignIn() {
         <>
             <div className={s.signInWrapper}>
                 <Link to={prevPage != "" ? prevPage : "/AcadComponent/"} className={s.Link}>
-                    <Button func={() => { clearInputs(), setHideNavBar(false) }}  content={"X"} className={s.goToStartingPage}></Button>
+                    <Button func={() => { clearInputs() }}  content={"X"} className={s.goToStartingPage}></Button>
                 </Link>
                 
                 <div className={s.topArc}>SIGN IN</div>

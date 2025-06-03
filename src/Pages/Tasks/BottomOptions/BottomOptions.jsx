@@ -9,11 +9,12 @@ const BottomOptions = () => {
           unselectAll, tasks, searching,
           setTasks, filteredTasks,
           setFilteredTasks, handleMarking,
-          selecting, setSelecting } = useContext(tasksContext)
+          selecting, setSelecting,
+          tasksOnType, setTasksOnType } = useContext(tasksContext)
 
 
   const selectAll = () => {
-    let data = tasks
+    let data = tasksOnType
     let filtTasks = filteredTasks
     let checkedData = []
     let checkedFiltTasks = []
@@ -40,11 +41,9 @@ const BottomOptions = () => {
     }
 
     if (!searching) {
-      setTasks(prevCheckboxes => {
-        return prevCheckboxes.map(task => {
-          return { ...task, isChecked: true };;
-        });
-      });
+      setTasksOnType(prev => prev.map((task) => {
+        return {...task, isChecked: true}
+      }))
     } else {
       setFilteredTasks([...filtTasks])
     }
