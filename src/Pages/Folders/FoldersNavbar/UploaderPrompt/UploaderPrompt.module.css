@@ -1,0 +1,50 @@
+.uploaderWrapper {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: #ffffffab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.uploaderWrapper > input {
+    display: none;
+}
+
+.uploaderWrapper .uploaderBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 15rem;
+    height: 13rem;
+    background-color: rgb(210, 207, 207);
+    border-radius: 1rem;
+    padding: 1rem;
+    position: relative;
+}
+
+.uploaderWrapper .uploaderBox .uploaderBoxLabel {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    border-style: dashed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.uploaderWrapper .uploaderBox .uploaderBoxLabel > img {
+    width: 7rem;
+}
+
+.uploaderWrapper .uploaderBox .closeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+}

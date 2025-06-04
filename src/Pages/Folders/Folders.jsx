@@ -1,340 +1,411 @@
-import { context } from "../../App"
-import { db } from "../../Firebase/Firebase"
-import s from "./Folders.module.css"
-import { useContext, useEffect, useRef, useState } from "react"
 
+import { context } from "../../App"
+import { auth, cloudDB, db } from "../../Firebase/Firebase"
+import s from "./Folders.module.css"
+import FoldersBottomNavbar from "./FoldersBottomNavbar/FoldersBottomNavbar"
+import FoldersNavbar from "./FoldersNavbar/FoldersNavbar"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
+import { deleteObject, listAll, ref } from "firebase/storage"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
+
+export const foldersContext = createContext()
 
 const Folders = () => {
-    const {setPages} = useContext(context)
+    const { user, setLoading, foldersCache, setFoldersCache } = useContext(context)
+
+    const { setPages, imageContent, setImageContent } = useContext(context)
     const folderInputRef = useRef(null)
 
     const [renameFolderInput, setRenameFolderInput] = useState(null)
-    const [renamedFolder, setRenamedFolder] = useState(null) 
+    const [renamedFolder, setRenamedFolder] = useState(null)
     const [openFile, setOpenFile] = useState(false)
 
     const [selecting, setSelecting] = useState(false)
     const [showFolderInput, setShowFolderInput] = useState(false)
-    
+    1
     const [folderPath, setFolderPath] = useState("Folders/")
 
-    const [folders, setFolders] = useState([
-        {name: "School Works", dateCreated: null, isSelected: false, id: 839259432, type: "folder", path: "Folders/"},
-        {name: "Office Works", dateCreated: null, isSelected: false, id: 395732794, type: "folder", path: "Folders/"},
-        {name: "Home Works", dateCreated: null, isSelected: false, id: 328584320, type: "folder", path: "Folders/"},
-        {name: "Mga kakupalan", dateCreated: null, isSelected: false, id: 324325343, type: "folder", path: "Folders/School Works/"}
-    ])
+    const [filesAndFolders, setFilesAndFolders] = useState(foldersCache)
+
+
+
     const [openedFolder, setOpenedFolder] = useState([])
     const [currentOpenedPath, setCurrentOpenedPath] = useState([
-        {name: "Folders", path: "Folders/"}
+        { name: "Folders", path: "Folders/" }
     ])
-    const [selectedFoldersId, setSelectedFoldersId] = useState([])
+    const [selectedFoldersAndFiles, setSelectedFoldersAndFiles] = useState([])
 
 
-// Functions
+    // Functions
 
-    function handleChecking(folder){
-        let foldersData = folders
-        let sortSelectedFolders= [] 
+    function handleChecking(folder) {
+        let foldersData = filesAndFolders
+        let sortSelectedFolders = []
 
-        for(let ind in foldersData){
-            if(folder.id == foldersData[ind].id) 
-                foldersData[ind].isSelected = foldersData[ind].isSelected ? false :  true
+        for (let ind in foldersData) {
+            if (folder.id == foldersData[ind].id)
+                foldersData[ind].isSelected = foldersData[ind].isSelected ? false : true
         }
 
-        for(let i in folders) {
-            if(folders[i].isSelected) {
-                sortSelectedFolders.push(folders[i].id)
+        for (let i in filesAndFolders) {
+            if (filesAndFolders[i].isSelected) {
+                sortSelectedFolders.push(filesAndFolders[i])
             }
         }
         console.log()
-        setSelectedFoldersId([...sortSelectedFolders])
-        setFolders([...foldersData])
+        setSelectedFoldersAndFiles([...sortSelectedFolders])
+        setFilesAndFolders([...foldersData])
     }
 
-    function handleSelectingAll(bool){
-        setFolders(prev => prev.map((folder)=>{
-            return {...folder, isSelected: bool ? true : false}
+    function handleSelectingAll(bool) {
+        setOpenedFolder(prev => prev.map((folder) => {
+            return { ...folder, isSelected: bool ? true : false }
         }))
 
-        let getFolders = folders
+        let getFolders = filesAndFolders
         let sortSelectedFolders = []
-        for(let i in getFolders) {
+        for (let i in getFolders) {
             getFolders[i].isSelected = bool ? true : false
             bool ? sortSelectedFolders.push(getFolders[i].id) : null
         }
 
 
-        setSelectedFoldersId([...sortSelectedFolders])
+        setSelectedFoldersAndFiles([...sortSelectedFolders])
     }
 
-    function createFolder(element){
+    function createFolder(element) {
         console.log(folderPath)
         const folderObject = {
-            name: element.target.value, 
-            dateCreated: null, 
-            isSelected: false, 
+            name: element.target.value,
+            dateCreated: Date.now(),
+            isSelected: false,
             id: Math.floor(Math.random() * 1000000),
             type: "folder",
             path: folderPath
         }
         const elemVal = element.target.value
-        const elemKey = element.key 
+        const elemKey = element.key
 
-        if(elemKey == "Enter") {
-            elemVal != "" ?
-            setFolders(prev => [folderObject, ...prev]) :
-            setShowFolderInput(false)
-            
+        if (elemKey == "Enter") {
+            if (elemVal != "") {
+                let data = [folderObject, ...filesAndFolders]
+                saveToDatabase(data)
+                setFilesAndFolders(prev => [folderObject, ...prev])
+            } else {
+                setShowFolderInput(false)
+            }
 
             setShowFolderInput(false)
             element.target.value = ""
         }
-        
     }
-
-    function deleteSelectedFolder(){
-        let getFolders = folders
-
-        for(let i in selectedFoldersId) {
-            for(let j in getFolders) {
-                if(selectedFoldersId[i] == getFolders[j].id) {
-                    getFolders.splice(j, 1)
-                }
-            }
-        }
-
-        setSelectedFoldersId([])
-        setFolders([...getFolders])
-    } 
-
-    function handleRenameFolder(element, folderArg){
+    function handleRenameFolder(element, folderArg) {
         const elemVal = element.target.value
         const elemKey = element.key
+        let data = filesAndFolders
 
         console.log(folderArg.name)
-        if(elemKey == "Enter") {
-            if(elemVal != "") {
-                setFolders(prev => prev.map((folder)=>
+        if (elemKey == "Enter") {
+            if (elemVal != "") {
+                data = data.map((folder) =>
                     folderArg.name == folder.name ?
-                    {...folder, name: elemVal} :
-                    {...folder}
+                        { ...folder, name: elemVal } :
+                        { ...folder }
+                )
+                saveToDatabase(data)
+                setFilesAndFolders(prev => prev.map((folder) =>
+                    folderArg.name == folder.name ?
+                        { ...folder, name: elemVal } :
+                        { ...folder }
                 ))
             } else {
                 setRenamedFolder(null)
             }
 
             setRenameFolderInput(null)
-        } 
+        }
     }
 
     function GoToFolderShortCut(folder) {
         let filesAndFolders = []
         let paths = currentOpenedPath
+        console.log(paths.length)
 
-        for(let i in folders) {
-            if(folders[i].path == folderPath) filesAndFolders.push(folders[i])
-        }
-
-        for(let i in currentOpenedPath) {
-            if(currentOpenedPath[i].path == folder.path) {
-                for(let j = currentOpenedPath.length - 1; j != i; j--) {
-                    paths.splice(j, 1)
-                }
-                break
+        if (paths.length != 1) {
+            for (let i in filesAndFolders) {
+                if (filesAndFolders[i].path == folderPath) filesAndFolders.push(filesAndFolders[i])
             }
+
+            for (let i in currentOpenedPath) {
+                if (currentOpenedPath[i].path == folder.path) {
+                    for (let j = currentOpenedPath.length - 1; j != i; j--) {
+                        paths.splice(j, 1)
+                    }
+                    break
+                }
+            }
+
+
+            setCurrentOpenedPath([...paths])
+            setOpenedFolder([...filesAndFolders])
         }
 
-        setCurrentOpenedPath([...paths])
-        setOpenedFolder([...filesAndFolders])
     }
 
-    function handleOpeningOfFolder(folder){
-        if(folder?.name)setFolderPath(folderPath + folder?.name + "/")
-        setCurrentOpenedPath(prev => [...prev, {name: folder?.name, path: folder?.path + folder?.name + "/"}])
-        let filesAndFolders = []
-        for(let i in folders) {
-            if(folders[i].path == folderPath) filesAndFolders.push(folders[i])
+    function handleOpeningOfFolder(folder) {
+        if (folder.type == "folder") {
+            if (folder?.name) setFolderPath(folderPath + folder?.name + "/")
+            setCurrentOpenedPath(prev => [...prev, { name: folder?.name, path: folder?.path + folder?.name + "/" }])
+            let filesAndFolders = []
+            for (let i in filesAndFolders) {
+                if (filesAndFolders[i].path == folderPath) filesAndFolders.push(filesAndFolders[i])
+            }
+            setOpenedFolder([...filesAndFolders])
+        } else {
+            setOpenFile(true)
         }
-        setOpenedFolder([...filesAndFolders])
+    }
+
+    const deleteSelectedFolder = async () => {
+        let getFilesAndFolders = filesAndFolders
+        setLoading(true)
+        try {
+            for (let i in selectedFoldersAndFiles) {
+                for (let j in getFilesAndFolders) {
+                    if (selectedFoldersAndFiles[i].id == getFilesAndFolders[j].id) {
+                        if (selectedFoldersAndFiles[i].type == "folder") {
+                            getFilesAndFolders.splice(j, 1)
+                        } else {
+                            await deleteObject(ref(cloudDB, `/${auth.currentUser?.uid}/${folderPath}/${selectedFoldersAndFiles[i].fullName}`))
+                            getFilesAndFolders.splice(j, 1)
+                        }
+                    }
+                }
+            }
+
+            await updateDoc(doc(db, "Users", user.uid), {
+                folders: getFilesAndFolders
+            })
+        } catch (error) {
+            console.log(error)
+        }
+
+        setSelectedFoldersAndFiles([])
+        setFilesAndFolders([...getFilesAndFolders])
+        setLoading(false)
+    }
+
+    const saveToDatabase = async (data) => {
+        const docRef = doc(db, "Users", user?.uid)
+        console.log(data)
+        if (data) setFoldersCache([...data])
+        try {
+            await updateDoc(docRef, {
+                folders: data ? data : filesAndFolders
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // Effects
 
-    useEffect(()=>{
-        if(folderPath != "") {
-            let filesAndFolders = []
+    useEffect(() => {
+        if (folderPath != "") {
+            let objects = []
+            let files = []
+            let folders = []
 
-            for(let i in folders) {
-                if(folders[i].path === folderPath) {
-                    filesAndFolders.push(folders[i])
+            for (let i in filesAndFolders) {
+                if (filesAndFolders[i].path === folderPath) {
+                    objects.push(filesAndFolders[i])
                 }
             }
 
-            console.log(folders)
+            for (let i in objects) {
+                objects[i].type == "folders" ?
+                    folders.push(objects[i]) :
+                    files.push(objects[i])
+            }
 
-            setOpenedFolder([...filesAndFolders])
+
+            console.log(objects)
+            setOpenedFolder([...folders, ...files])
         }
-    },[folderPath, folders])
+    }, [folderPath, filesAndFolders])
 
-    useEffect(()=>{
-        setPages(prev => prev.map((p)=>{
-            if(p.name === "Folders") return {...p, ind: true}
 
-            return{...p, ind: false}
+    useEffect(() => {
+        if (foldersCache.length == 0 && user) {
+            const getFromFireStore = async (uid) => {
+                setLoading(true)
+                try {
+                    const docRef = doc(db, "Users", uid)
+                    const getFolders = await getDoc(docRef)
+                    const dataFolders = getFolders.data()?.folders
+                    console.log(dataFolders)
+                    if (dataFolders) {
+                        setFilesAndFolders([...dataFolders])
+                        setFoldersCache([...dataFolders])
+                    }
+
+                } catch (error) {
+                    console.log(error)
+                }
+                setLoading(false)
+            }
+
+            if (user?.uid) getFromFireStore(user.uid)
+        }
+    }, [foldersCache, user])
+
+
+    useEffect(() => {
+        setPages(prev => prev.map((p) => {
+            if (p.name === "Folders") return { ...p, ind: true }
+
+            return { ...p, ind: false }
         }))
-    },[])
+    }, [])
 
     // Component
 
+    const variables = {
+        openFile, setOpenFile,
+        imageContent, setImageContent,
+        folderPath, setFilesAndFolders,
+        filesAndFolders, folderInputRef,
+        saveToDatabase: () => { saveToDatabase() }
+    }
+
+    const FileOrImage = ({folder}) => {
+        console.log(folder.fileType)
+
+        return <>
+            {
+                folder.fileType.includes("image") ?
+                    <input type="image" src={folder.url} width={"16px"} style={{marginRight: "1rem"}} /> :
+                    <i className="fa fa-file"></i>
+            }
+        </>
+    }
 
     return (
-        <>
+        <foldersContext.Provider value={variables}>
             <div className={s.foldersWrapper}>
-                <FoldersNav 
-                    createFolder={createFolder} 
+                <FoldersNavbar
+                    createFolder={createFolder}
                     setShowFolderInput={setShowFolderInput} />
                 {
-                    selecting ? 
-                    <FoldersBottomNav 
-                        selecting={selecting} 
-                        setSelecting={setSelecting} 
-                        handleSelectingAll={handleSelectingAll}
-                        deleteSelectedFolder={deleteSelectedFolder} /> : 
-                    <div className={s.foldersBottomNav}>
-                        <button onClick={()=>{setSelecting(true)}}>Select Folders</button>
-                    </div>
+                    selecting ?
+                        <FoldersBottomNavbar
+                            selecting={selecting}
+                            setSelecting={setSelecting}
+                            handleSelectingAll={handleSelectingAll}
+                            deleteSelectedFolder={deleteSelectedFolder} /> :
+                        <div className={s.foldersBottomNav}>
+                            <button onClick={() => { setSelecting(true) }}>Select Folders</button>
+                        </div>
                 }
                 <div className={s.foldersBox}>
                     <div className={s.folderPathWrapper}>
                         <h3>{
-                            currentOpenedPath.map(folder => 
+                            currentOpenedPath.map(folder =>
                                 folder.path == "Folders/" ?
-                                <span key={folder.name + folder.path}>
-                                    <span onClick={()=>{setFolderPath(folder.path), GoToFolderShortCut(folder)}}>{folder.name} </span>
-                                </span> :
-                                <span key={folder.name + folder.path}>
-                                    / <span onClick={()=>{setFolderPath(folder.path), GoToFolderShortCut(folder)}}>{folder.name} </span>
-                                </span>
-                            ) 
+                                    <span key={folder.name + folder.path}>
+                                        <span onClick={() => { setFolderPath(folder.path), GoToFolderShortCut(folder) }}>{folder.name} </span>
+                                    </span> :
+                                    <span key={folder.name + folder.path}>
+                                        / <span onClick={() => { setFolderPath(folder.path), GoToFolderShortCut(folder) }}>{folder.name} </span>
+                                    </span>
+                            )
                         }</h3>
                     </div>
                     <div className={showFolderInput ? s.folderInput : s.hideFolderInput}>
                         <i className="fa fa-folder"></i>
-                        <input 
+                        <input
                             type="text"
                             ref={folderInputRef}
                             id="folderInput"
-                            onBlur={()=>{
+                            onBlur={() => {
                                 setShowFolderInput(false)
                                 folderInputRef.current.value = ""
                             }}
-                            onKeyDown={(e)=>{
+                            onKeyDown={(e) => {
                                 createFolder(e)
                             }} />
-                        <i 
+                        <i
                             className={`fa fa-close ${s.close}`}
-                            onClick={()=>{setShowFolderInput(false)}}></i>
+                            onClick={() => { setShowFolderInput(false) }}></i>
                     </div>
-                    {openedFolder?.map((folder, i) => 
-                        <label 
+                    {openedFolder?.map((folder, i) =>
+                        <label
                             htmlFor={renameFolderInput != null ? folder.id : null}
-                            className={folder.isSelected ? `${s.selected} ${s.folder}` : `${s.folder}`} 
-                            key={folder.name}
-                            onDoubleClick={()=>{
-                                if(!selecting) {
+                            className={folder.type == "folder" ? folder.isSelected ? `${s.selected} ${s.folder}` : `${s.folder}` : folder.isSelected ? `${s.selected} ${s.file}` : `${s.file}`}
+                            key={folder.dateCreated}
+                            onDoubleClick={() => {
+                                if (!selecting) {
                                     setRenameFolderInput(folder.name)
                                     setRenamedFolder(folder.id)
                                 }
                             }} >
 
                             <input type="checkbox"
-                                    style={selecting ? 
-                                        {display: "block"} :
-                                        {display: "none"}
-                                    }
-                                    checked={folder.isSelected ? true : false}
-                                    onChange={()=>{
-                                        if(selecting) handleChecking(folder)
-                                    }} />
-                            <i className="fa fa-folder"></i>
+                                style={selecting ?
+                                    { display: "block" } :
+                                    { display: "none" }
+                                }
+                                checked={folder.isSelected ? true : false}
+                                onChange={() => {
+                                    if (selecting) handleChecking(folder)
+                                }} />
+                            {
+                                folder.type == "folder" ?
+                                    <i className="fa fa-folder"></i> :
+                                    <FileOrImage folder={folder}/>
+                            }
                             {
                                 renameFolderInput != null &&
-                                renamedFolder == folder.id ?
-                                <input 
-                                    id={folder.id}
-                                    type="text"
-                                    value={renameFolderInput}
-                                    onKeyDown={(e)=>{
-                                        handleRenameFolder(e, folder)
-                                    }}
+                                    renamedFolder == folder.id ?
+                                    <input
+                                        id={folder.id}
+                                        type="text"
+                                        value={renameFolderInput}
+                                        onKeyDown={(e) => {
+                                            handleRenameFolder(e, folder)
+                                        }}
 
-                                    onBlur={()=>[
-                                        setRenameFolderInput(null),
-                                        setRenamedFolder(null)
-                                    ]}
-                                    
-                                    onChange={(e)=>{
-                                        setRenameFolderInput(e.target.value)
-                                    }}/> :
-                                <span>{folder.name}</span>
+                                        onBlur={() => [
+                                            setRenameFolderInput(null),
+                                            setRenamedFolder(null)
+                                        ]}
+
+                                        onChange={(e) => {
+                                            setRenameFolderInput(e.target.value)
+                                        }} /> :
+                                    <span>{folder.name}</span>
                             }
-                            <button 
-                                className={s.open}
-                                onClick={()=>{
-                                    folder.type === "folder" ? handleOpeningOfFolder(folder) : setOpenFile(true)
-                                }}>
-                                    Open
-                            </button>
+                            {
+                                folder.type == "folder" ?
+                                    <button
+                                        className={s.open}
+                                        onClick={() => {
+                                            handleOpeningOfFolder(folder)
+                                        }}>
+                                        Open
+                                    </button> :
+                                    <a
+                                        className={s.open}
+                                        href={folder.url}>
+                                        Open
+                                    </a>
+                            }
                         </label>
                     )}
                 </div>
-                
             </div>
-        </>
+        </foldersContext.Provider>
     )
-}
-
-// Nav Component 
-
-const FoldersNav = ({ setShowFolderInput }) => {
-    return <div className={s.foldersNav}>
-                <h1>Folders</h1>
-                <div className={s.right}>
-                    <button 
-                        onClick={()=>{setShowFolderInput(true)}}>
-                        <label htmlFor="folderInput">Create</label>
-                    </button>
-                </div>
-                <span className={s.horizontalLine}></span>
-            </div>
-
-}
-
-const FoldersBottomNav = ({deleteSelectedFolder, setSelecting, handleSelectingAll}) => {
-    
-
-    return <div className={s.foldersBottomNav}>
-                <div className={s.left}>
-                    <button onClick={()=>{handleSelectingAll(true)}}>
-                        <i className="fa fa-check"></i>
-                        <span className={s.fullContent}>Select All</span>
-                    </button>
-                    <button onClick={()=>{handleSelectingAll(false)}}>
-                        <i className={`${"fa fa-check-square"} ${s.uncheck}` }></i>
-                        <span className={s.fullContent}>Unselect All</span>
-                    </button>
-                </div>
-                <div className={s.right}>
-                    <button onClick={()=>{deleteSelectedFolder()}}>
-                        <i className="fa fa-trash"></i>
-                        <span className={s.fullContent}>Delete</span>
-                    </button>
-                    <button onClick={()=>{setSelecting(false), handleSelectingAll(false)}}>
-                        <i className="fa fa-close"></i>
-                        <span className={s.fullContent}>Cancel</span>
-                    </button>
-                </div>
-            </div>
 }
 
 export default Folders

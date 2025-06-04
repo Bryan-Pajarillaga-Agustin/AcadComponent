@@ -1,0 +1,62 @@
+.foldersNav {
+    display: flex;
+    width: 100%; 
+    height: 4.5rem;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.foldersNav .horizontalLine {
+    position: absolute;
+    bottom: 0;
+    height: 3px;
+    background-color: black;
+    width: 100%;
+    transform: scaleX(.97);
+}
+
+.foldersNav h1 {
+    color: var(--tabNameColor);
+    margin-left: 1rem;
+}
+
+.foldersNav .right {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    gap: .75rem;
+    margin-right: 1rem;
+    position: relative;
+}
+
+.foldersNav .right .uploadWrapper {
+    display: none;
+}
+
+.foldersNav .right:hover .uploadWrapper {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    position: absolute;
+    top: 2.5rem;
+    right: 0;
+    z-index: 1;
+    border-radius: .5rem;
+    padding: .3rem;
+    background-color: white;
+}
+
+.foldersNav .right:hover .uploadWrapper > button{
+    background-color: white;
+    color: var(--tabNameColor);
+    border: none;
+    border-radius: 0;
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+.foldersNav .right:hover .uploadWrapper > button:hover{
+    color: white;
+    background-color: var(--tabNameColor);
+}

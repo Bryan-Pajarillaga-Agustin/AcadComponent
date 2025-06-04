@@ -1,8 +1,11 @@
 import s from "./Selections.module.css"
 import Button from "../../../../Components/Button"
-import { useState, useEffect, useRef, useActionState } from "react"
+import { useState, useEffect, useRef, useActionState, useContext } from "react"
+import { dashboardContext } from "../../Dashboard"
 
-const Selections = ({accInformation, editAccount, setFavSubjects, purpose, setPurpose, usingAs, setUsingAs}) => {
+const Selections = () => {
+    const {userData, editAccount, setFavSubjects, purpose, setPurpose, usingAs, setUsingAs} = useContext(dashboardContext)
+
     const subjectRef = useRef()
     const [subjects, setSubjects] = useState(null)
     const [showInputSubject, setShowInputSubject] = useState(false)
@@ -44,10 +47,10 @@ const Selections = ({accInformation, editAccount, setFavSubjects, purpose, setPu
     },[subjects])
 
     useEffect(()=>{
-        if(accInformation?.favSubjects) {
-            setSubjects([...accInformation.favSubjects])
+        if(userData?.favSubjects) {
+            setSubjects([...userData.favSubjects])
         }
-    },[accInformation])
+    },[userData])
     return (
         <div className={s.Selections_Wrapper}>
             <div className={s.top}>

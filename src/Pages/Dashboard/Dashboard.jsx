@@ -137,64 +137,21 @@ const Dashboard = () => {
                             setShowChanges={val => setShowChanges(val)} >
                         </DashboardNavbar>
                     </nav>
-                    <div className={s.Account_Information_Box}>
+                    <div className={s.dashboardBox}>
                         <div className={s.left}>
-                            <Profile editAccount={editAccount}
-                                setEditAccount={(val) => { setEditAccount(val) }}
-                                user={user}
-                                setLoading={(val) => setLoading(val)}>
-                            </Profile>
-                            <Skills skills={skills}
-                                setSkills={(val) => { setSkills(val) }}
-                                addSkill={() => { addSkill() }}
-                                skillRef={skillRef}
-                                editAccount={editAccount}
-                                setEditAccount={(val) => { setEditAccount(val) }}
-                                setLoading={(val) => setLoading(val)}>
-                            </Skills>
-                            <Contacts contacts={contacts}
-                                setContacts={(val) => setContacts(val)}
-                                editAccount={editAccount}
-                            ></Contacts>
+                            <Profile />
+                            <Skills />
+                            <Contacts />
                         </div>
                         <div className={s.right}>
                             <div className={s.top}>
-                                <Forms editAccount={editAccount}
-                                    uName={uName}
-                                    setUName={(val) => { setUName(val) }}
-                                    school={school}
-                                    setSchool={(val) => { setSchool(val) }}
-                                    pBirth={pBirth}
-                                    setPBirth={(val) => { setPBirth(val) }}
-                                    age={age}
-                                    setAge={(val) => { setAge(val) }}
-                                    bDay={bDay}
-                                    setBDay={(val) => { setBDay(val) }}
-                                    gender={gender}
-                                    setGender={(val) => { setGender(val) }}
-                                    hobbies={hobbies}
-                                    setHobbies={(val) => { setHobbies(val) }}
-                                    grSec={grSec}
-                                    setGrSec={(val) => { setGrSec(val) }}
-                                    usingAs={usingAs}
-                                    setUsingAs={(val) => { setUsingAs(val) }}>
-                                </Forms>
+                                <Forms />
                             </div>
                             <div className={s.mid}>
-                                <Selections 
-                                    editAccount={editAccount}
-                                    setFavSubjects={(val) => { setFavSubjects(val) }}
-                                    usingAs={usingAs}
-                                    setUsingAs={(val) => { setUsingAs(val) }}
-                                    purpose={purpose}
-                                    setPurpose={(val) => { setPurpose(val) }}>
-                                </Selections>
+                                <Selections />
                             </div>
                             <div className={s.bottom}>
-                                <Bio
-                                    editAccount={editAccount}
-                                    desc={desc}
-                                    setDesc={(val) => { setDesc(val) }} />
+                                <Bio />
                             </div>
                         </div>
                     </div>

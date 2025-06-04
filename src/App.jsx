@@ -44,18 +44,20 @@ function App() {
   const [showSignUp, setShowSignUp] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const [showMakeUserSignIn, setShowMakeUserSignIn] = useState(false)
-  const [hideSideBar, setHideSideBar] = useState(false)
+  const [hideSideBar, setHideSideBar] = useState(true)
   const [hideSaveChanges, setHideSaveChanges] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isSigningOut, setIsSigningOut] = useState(false)
   const [continueAs, setContinueAs] = useState(false)
   const [saveChanges, setSaveChanges] = useState(false)
 
-  const [prevPage, setPrevPage] = useState("")
+  const [prevPage, setPrevPage] = useState("/AcadComponent/")
+  const [imageContent, setImageContent] = useState(null)
 
   const [user, setUser] = useState()
   const [userData, setUserData] = useState({})
   const [tasksCache, setTasksCache] = useState([])
+  const [foldersCache, setFoldersCache] = useState([])
   const [changes, setChanges] = useState()
   const [pages, setPages] = useState([
     {
@@ -123,6 +125,7 @@ function App() {
     
     // Strings and Integers 
     prevPage, setPrevPage,
+    imageContent, setImageContent,
 
     // Arrays & Objects
     user, setUser,
@@ -130,6 +133,7 @@ function App() {
     tasksCache, setTasksCache,
     pages, setPages,
     changes, setChanges,
+    foldersCache, setFoldersCache,
     // Functions
     pagination: (i)=>{
       handlePages(i)

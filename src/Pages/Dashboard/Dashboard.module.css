@@ -1,6 +1,6 @@
 .dashboardWrapper {
     flex-direction: column;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     position: absolute;
     top: 0;
@@ -13,7 +13,7 @@
 
 .navBar {
     height: 5.5rem;
-    width: 100vw;
+    width: 100%;
     position: fixed;
     flex-direction: row;
     align-items: center;
@@ -28,9 +28,9 @@
     color: white;
 }
 
-.Account_Information_Box {
+.dashboardBox {
     display: flex;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     align-items: center;
     justify-content: center;
@@ -38,14 +38,14 @@
     margin-top: 7.3rem;
 }
 
-.Account_Information_Box > div {
+.dashboardBox > div {
     margin-bottom: 2rem;
     padding: 1rem 0;
     overflow-y: hidden;
     overflow-x: hidden;
 }
 
-.Account_Information_Box .left {
+.dashboardBox .left {
     width: 30vw;
     height: 80vh;
     background-color: #e4e4e4;
@@ -57,11 +57,11 @@
     overflow-y: scroll;
 }
 
-.Account_Information_Box .left > *, .Account_Information_Box .right > * {
+.dashboardBox .left > *, .dashboardBox .right > * {
     font-size: clamp(.5rem, 2vw, 1.3rem);
 }
 
-.Account_Information_Box .right {
+.dashboardBox .right {
     width: 65vw;
     height: 80vh;
     background-color: #e4e4e4;
@@ -75,23 +75,23 @@
         height: 3rem;
     }
 
-    .Account_Information_Box  {
+    .dashboardBox  {
         flex-direction: column;
         margin-top: 4rem;
     }
 
-    .dashboardWrapper .Account_Information_Box > div {
+    .dashboardWrapper .dashboardBox > div {
         width: 90vw;
         height: 50vh;
         margin-top: .5rem;
     }
 
-    .Account_Information_Box > div {
+    .dashboardBox > div {
         margin-bottom: 0em;
     }
 
 
-    .Account_Information_Box .left > *, .Account_Information_Box .right > * {
+    .dashboardBox .left > *, .dashboardBox .right > * {
         font-size: clamp(1.2rem, 2vw, 2rem);
     }
 }

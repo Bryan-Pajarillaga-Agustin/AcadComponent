@@ -1,4 +1,4 @@
-.Profile_Img_Wrapper {
+.profileImgWrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -6,7 +6,7 @@
     gap: 1rem;
 }
 
-.Profile_Img_Wrapper .profPic {
+.profileImgWrapper .profPic {
     width: 10rem;
     height: 10rem;
     cursor: pointer;
@@ -17,12 +17,12 @@
     background-size: cover;
 }
 
-.Profile_Img_Wrapper .uploadPictureWrapper > h2 {
+.profileImgWrapper .uploadPictureWrapper > h2 {
     font-weight: 800;
     color: var(--bg-color); 
 }
 
-.Profile_Img_Wrapper .uploadPictureWrapper > button {
+.profileImgWrapper .uploadPictureWrapper > button {
     color: #fff;
     background-color: var(--bg-color);
     border: none;
@@ -37,7 +37,7 @@
     transition: .5s ease;
 }
 
-.Profile_Img_Wrapper .uploadPictureWrapper > button:hover {
+.profileImgWrapper .uploadPictureWrapper > button:hover {
     color: var(--bg-color);
     background-color: #fff;
 }
@@ -165,7 +165,7 @@
     background-color: #fff;
 }
 
-.Picture_Wrapper {
+.pictureWrapper {
     display: flex; 
     justify-content: center;
     align-items: center;
@@ -178,18 +178,18 @@
     left: 0;
 }
 
-.Picture_Wrapper .Picture_Box {
+.pictureWrapper .pictureBox {
     width: auto;
     height: 100vh;
     position: relative;
 }
 
-.Picture_Wrapper .Picture_Box > img {
+.pictureWrapper .Picture_Box > img {
     width: auto;
     height: 100vh;
 }
 
-.Picture_Wrapper .Picture_Box > button {
+.pictureWrapper .Picture_Box > button {
     position: absolute;
     top: 0;
     right: 0;
@@ -203,7 +203,7 @@
     z-index: 1;
 }
 
-.Picture_Wrapper .Picture_Box > button:hover {
+.pictureWrapper .Picture_Box > button:hover {
     color: rgba(188, 185, 185, 0.759);
     background-color: white;
 }
@@ -244,7 +244,7 @@
 
 
 @media (max-width: 600px) and (max-height: 800px) { 
-    .Profile_Img_Wrapper .uploadPictureWrapper > button {
+    .profileImgWrapper .uploadPictureWrapper > button {
         padding: clamp(.25rem, 2vw, .5rem) clamp(.25rem, 2vw, 2rem);
         font-size: clamp(1rem, 2vw, 1.3rem);
     }
@@ -254,7 +254,7 @@
         height: 350px;
     }
 
-    .Profile_Img_Wrapper .uploadPictureWrapper h2 {
+    .profileImgWrapper .uploadPictureWrapper h2 {
         font-size: 1.25rem;
     }
 }

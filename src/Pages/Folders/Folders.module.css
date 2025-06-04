@@ -12,10 +12,10 @@
     font-family: Kanit;
     background-color: var(--bgColor);
     height: 100vh;
-    width: 100vw;
+    width: 100%;
 }
 
-.foldersWrapper button {
+.foldersWrapper button, .foldersWrapper a {
     padding: clamp(.3rem, 2vw, .75rem) clamp(.5rem, 2vw, 1rem);
     outline: none;
     border: none;
@@ -37,7 +37,7 @@
 
 .foldersNav {
     display: flex;
-    width: 100vw; 
+    width: 100%; 
     height: 4.5rem;
     align-items: center;
     justify-content: space-between;
@@ -49,7 +49,7 @@
     bottom: 0;
     height: 3px;
     background-color: black;
-    width: 100%;
+    width: 90%;
     transform: scaleX(.97);
 }
 
@@ -127,7 +127,19 @@
     right: 2rem;
 }
 
-.foldersBox .folder, .foldersBox .folderInput {
+.foldersBox .folder > input, .foldersBox .folderInput > input, .foldersBox .file > input {
+    margin-left: 1rem;
+}
+
+.foldersBox .folder > i, .foldersBox .folderInput > i, .foldersBox .file > i {
+    margin: 0 1rem;
+}
+
+.foldersBox .folder > *, .foldersBox .folderInput > *, .foldersBox .file > * {
+    margin: 1rem 0;
+}
+
+.foldersBox .folder, .foldersBox .folderInput, .foldersBox .file {
     display: flex;
     width: 100%;
     align-items: center;
@@ -143,11 +155,11 @@
     overflow: hidden;
 }
 
-.foldersBox .folder .open{
+.foldersBox .folder .open, .foldersBox .file .open{
     display: none;
 }
 
-.foldersBox .folder:hover .open {
+.foldersBox .folder:hover .open, .foldersBox .file:hover .open {
     position: absolute;
     display: block;
     background-color: #e8b246;
@@ -155,7 +167,7 @@
     animation: showOpenButton .3s ease-out forwards;
 }
 
-.foldersBox .folder:hover .open:hover {
+.foldersBox .folder:hover .open:hover, .foldersBox .file:hover .open:hover {
     background-color: white;
     color: var(--buttBgColor);
 }
@@ -166,11 +178,11 @@
     }
 }
 
-.foldersBox .folder:active {
+.foldersBox .folder:active, .foldersBox .file:active {
     filter: brightness(.9);
 }
 
-.foldersBox .folder:hover {
+.foldersBox .folder:hover, .foldersBox .file:hover {
     background-color: var(--tabNameColor);
     color: white;
 }

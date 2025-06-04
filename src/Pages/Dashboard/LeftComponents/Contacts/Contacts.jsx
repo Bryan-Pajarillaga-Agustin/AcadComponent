@@ -1,9 +1,12 @@
 import { setIndexConfiguration } from "firebase/firestore"
 import Button from "../../../../Components/Button"
 import s from "./Contacts.module.css"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { dashboardContext } from "../../Dashboard"
 
-const Contacts = ({contacts, setContacts, editAccount}) => {
+const Contacts = () => {
+    const {contacts, setContacts, editAccount} = useContext(dashboardContext)
+
     const [onEditCon, setOnEditCon] = useState(null)
     const [curEditCon, setCurEditCon] = useState(null)
     const [copyCon, setCopyCon] = useState(contacts)
@@ -30,9 +33,9 @@ const Contacts = ({contacts, setContacts, editAccount}) => {
     },[contacts])
 
     return (
-        <div className={s.Contacts_Wrapper}>
+        <div className={s.contactsWrapper}>
             <h3>Contacts:</h3>
-            <div className={s.Contacts_Box}>
+            <div className={s.contactsBox}>
                 {
                         contacts?.map((each, i) => {
                             return (

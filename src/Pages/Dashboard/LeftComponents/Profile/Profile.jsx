@@ -1,26 +1,27 @@
 import s from "./Profile.module.css"
 import Button from "../../../../Components/Button"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useContext } from "react"
 import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage"
 import { auth, cloudDB, db } from "../../../../Firebase/Firebase"
 import { updateDoc,doc, collection, addDoc, getDocs, arrayUnion } from "firebase/firestore"
 import { createPortal } from "react-dom"
+import { dashboardContext } from "../../Dashboard"
 db
-const Profile = ({accInformation, editAccount, user, setLoading}) => {
+const Profile = () => {
+    const {userData, editAccount, user, setLoading} = useContext(dashboardContext)
     // refs
     const inputImgRef = useRef()
 
     const [profPic, setProfPic] = useState(null)
     const [showUpPic, setShowUpPic] = useState(false)
     const [upPicLinks, setUpPicLinks] = useState([])
-    const [data, setData] = useState([])
     // JSON.parse(localeStorage.getItem("uploadedPicLinks")
 
     const getImages = async () => {
         setLoading(true)
         try {
             let arrOfImgs = []
-            const snap = await listAll(ref(cloudDB, auth.currentUser?.uid))
+            const snap = await listAll(ref(cloudDB, `${auth.currentUser?.uid}/Uploaded_Profile_Pictures`))
         
             for(let i in snap.items){
                 const url = await getDownloadURL(snap.items[i])
@@ -43,7 +44,7 @@ const Profile = ({accInformation, editAccount, user, setLoading}) => {
                 let random = Math.floor(Math.random() * (letters.length)); //Corrected random number generation
                 randId = randId.concat(letters[random]);
             }
-            const imageRef = ref(cloudDB, auth.currentUser.uid+`/${file.name + "_" + randId}`)
+            const imageRef = ref(cloudDB, auth.currentUser.uid+`/Uploaded_Profile_Pictures/${file.name + "_" + randId}`)
             await uploadBytes(imageRef, file)
             getDownloadURL(imageRef).then((url)=>{
                 setUpPicLinks(prev => [{img: url, id: Math.random() * 1, fileName: file.name + "_" + randId}, ...prev])
@@ -70,7 +71,7 @@ const Profile = ({accInformation, editAccount, user, setLoading}) => {
     const handleDeletePic = async (fileName) => {
         setLoading(true)
         try {
-            await deleteObject(ref(cloudDB, `/${auth.currentUser?.uid}/${fileName}`))
+            await deleteObject(ref(cloudDB, `/${auth.currentUser?.uid}/Uploaded_Profile_Pictures/${fileName}`))
             getImages()
         } catch (error) {
             console.log(error)
@@ -88,8 +89,8 @@ const Profile = ({accInformation, editAccount, user, setLoading}) => {
 
 
         if (profPic) return (
-            <div className={s.Picture_Wrapper}>
-                <div className={s.Picture_Box}>
+            <div className={s.pictureWrapper}>
+                <div className={s.pictureBox}>
                     <Button icon={(<i className="fa fa-close"></i>)}
                             className={s.hidePromptButt}
                             func={()=>{setProfPic(false)}}>
@@ -103,12 +104,12 @@ const Profile = ({accInformation, editAccount, user, setLoading}) => {
 
     return (
         <>
-            <div className={s.Profile_Img_Wrapper}>
+            <div className={s.profileImgWrapper}>
                 <div ref={inputImgRef}  
-                    className={s.profPic} style={accInformation?.profPic 
-                    ? {backgroundImage: `url(${accInformation.profPic})`} 
+                    className={s.profPic} style={userData?.profPic 
+                    ? {backgroundImage: `url(${userData.profPic})`} 
                     : {backgroundImage: "url(./blue-circle-with-white-user.png)"}}
-                    onClick={()=>{setProfPic(accInformation.profPic)}}>
+                    onClick={()=>{setProfPic(userData.profPic)}}>
                 </div>
                 <div className={s.uploadPictureWrapper}>
                     {

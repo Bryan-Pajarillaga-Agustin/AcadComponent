@@ -1,4 +1,4 @@
-.Contacts_Wrapper {
+.contactsWrapper {
     display: flex;
     margin: 1rem;
     width: 80%;
@@ -7,11 +7,11 @@
     color: #EAAE2C;
 }
 
-.Contacts_Wrapper > h3{
+.contactsWrapper > h3{
     width: 100%;
 }
 
-.Contacts_Wrapper .Contacts_Box {
+.contactsWrapper .contactsBox {
     width: 90%;
     display: flex;
     align-items: center;
@@ -22,18 +22,18 @@
     overflow-y: auto;
 }
 
-.Contacts_Wrapper .Contacts_Box > li {
+.contactsWrapper .contactsBox > li {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
 
-.Contacts_Wrapper .Contacts_Box > li > i {
+.contactsWrapper .contactsBox > li > i {
     font-size: clamp(.5rem ,2vw, 1.2rem);
     font-weight: bolder;
 }
 
-.Contacts_Wrapper .Contacts_Box li > input {
+.contactsWrapper .contactsBox li > input {
     width: 80%;
     outline: none;
     border: none;
@@ -45,8 +45,8 @@
 
 
 @media (max-width: 600px) and (max-height: 800px) {
-    .Contacts_Wrapper .Contacts_Box > li > i,
-    .Contacts_Wrapper .Contacts_Box li > input {
+    .contactsWrapper .contactsBox > li > i,
+    .contactsWrapper .contactsBox li > input {
         font-size: clamp(.75rem ,2vw, 1.5rem);
     }
 }

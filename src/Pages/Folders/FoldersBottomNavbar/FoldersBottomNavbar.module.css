@@ -1,0 +1,29 @@
+.foldersBottomNav {
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.foldersBottomNav .left >  button .uncheck {
+    background-color: white;
+    color: transparent;
+}
+
+.foldersBottomNav .left >  button:hover .uncheck {
+    color: white;
+}
+
+.foldersBottomNav .left, .foldersBottomNav .right{
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.foldersBottomNav .left {
+    margin-left: 1rem;
+}
+
+.foldersBottomNav .right {
+    margin-right: 1rem;
+}

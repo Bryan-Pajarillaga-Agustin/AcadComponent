@@ -1,7 +1,10 @@
 import s from "./Skills.module.css"
 import Button from "../../../../Components/Button"
-import { useEffect, useRef, useState } from "react"
-const Skills = ({skills, addSkill, editAccount, setSkills, skillRef}) => {
+import { useContext, useEffect, useRef, useState } from "react"
+import { dashboardContext } from "../../Dashboard"
+const Skills = () => {
+    const {skills, addSkill, editAccount, setSkills, skillRef} = useContext(dashboardContext)
+
     const [showInput, setShowInput] = useState(false)
 
     function handleSubmitSkill(){
@@ -29,12 +32,12 @@ const Skills = ({skills, addSkill, editAccount, setSkills, skillRef}) => {
 
 
     return (
-        <form className={s.Skills_Wrapper} onSubmit={(e)=>{e.preventDefault()}}>
-            <div className={s.Add_Skills_Wrapper}>
+        <form className={s.skillsWrapper} onSubmit={(e)=>{e.preventDefault()}}>
+            <div className={s.addSkillsWrapper}>
                 <h3>Skills:</h3>
                 <label htmlFor="blankSkill" style={editAccount ? {display: "flex"} : {display: "none"}} onClick={()=>setShowInput(true)}><i className="fa fa-plus"></i></label>
             </div>
-            <div className={s.Skills_Box}>
+            <div className={s.skillsBox}>
                 {
                     skills?.map((skill, i)=>{
                         return (
@@ -43,7 +46,7 @@ const Skills = ({skills, addSkill, editAccount, setSkills, skillRef}) => {
                                 {
                                     editAccount ? 
                                     <Button icon={(<i className="fa fa-close"></i>)}
-                                    className={s.Hide_Prompt_Button}
+                                    className={s.hidePromptButton}
                                     func={()=>{deleteSkill(i)}}>
                                     </Button> : 
                                     null

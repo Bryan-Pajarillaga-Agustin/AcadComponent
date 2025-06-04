@@ -3,15 +3,17 @@ import Button from '../../../Components/Button'
 import { useNavigate } from 'react-router-dom'
 import { dashboardContext } from '../Dashboard'
 import { useContext } from 'react'
+import { context } from '../../../App'
 
 const DashboardNavbar = () => {
-    const {editAccount, setEditAccount, saveAccountChanges, setShowPersonalInformation, setShowChanges} = useContext(dashboardContext)
+    const {editAccount, setEditAccount, saveAccountChanges, setShowChanges} = useContext(dashboardContext)
+    const {prevPage} = useContext(context)
     const navigation = useNavigate()
     function handleHideAccountTab(){
         if(editAccount) {
             setShowChanges(true)
         } else {
-            setShowPersonalInformation(false)
+            navigation(prevPage)
             setEditAccount(false)
         }
     }

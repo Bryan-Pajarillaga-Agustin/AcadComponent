@@ -1,18 +1,18 @@
-.Forms_Wrapper {
+.formsWrapper {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
 }
 
-.Forms_Wrapper .accountInfoWrapper {
+.formsWrapper .accountInfoWrapper {
     margin: .5rem;
     display: flex;
     flex-direction: column;
     gap: .5rem;
 }
 
-.Forms_Wrapper .accountInfoWrapper .inputWrapper > h4 {
+.formsWrapper .accountInfoWrapper .inputWrapper > h4 {
     color: #EAAE2C;
     font-family: Kanit;
     font-weight: 500;
@@ -20,7 +20,7 @@
 }
 
 
-.Forms_Wrapper .accountInfoWrapper .inputWrapper {
+.formsWrapper .accountInfoWrapper .inputWrapper {
     width: 100%;
     display: flex;
     flex-direction: column;

@@ -1,6 +1,10 @@
+import { useContext } from "react"
 import s from "./Bio.module.css"
+import { dashboardContext } from "../../Dashboard"
 
-const Bio = ({ editAccount, desc, setDesc }) => {
+const Bio = () => {
+    const { editAccount, desc, setDesc } = useContext(dashboardContext)
+
     return (
         <div className={s.bioWrapper}>
             <h3>

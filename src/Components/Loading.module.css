@@ -10,7 +10,7 @@ body {
     overflow-y: hidden;
 }
 
-.Loading_Wrapper {
+.loadingWrapper {
     display: flex;
     flex-direction: column;
     font-size: 1.4rem;
@@ -27,7 +27,7 @@ body {
     left: 0;
 }
 
-.Loading_Wrapper .Loading_Bar {
+.loadingWrapper .loadingBar {
     border: .5rem solid var(--loading-bar);
     border-right: .5rem solid transparent;
     width: 75px;
