@@ -19,7 +19,7 @@ import Loading from './Components/Loading/Loading'
 // PageNotFound
 import PageNotFound from './PageNotFound/PageNotFound'
 
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
+import { HashRouter, Routes, Route, useNavigate } from "react-router-dom"
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from './Firebase/Firebase'
 import VerifySigningOut from './Authentication/VerifySigningOut/VerifySigningOut'
@@ -158,7 +158,7 @@ function App() {
   return (
     <>
       <context.Provider value={contextVariables}>
-        <BrowserRouter>
+        <HashRouter>
           <NavBar />
           <Routes>
             {
@@ -170,7 +170,7 @@ function App() {
           <VerifySigningOut />
           <MakeUserSignIn />
           <Loading />
-        </BrowserRouter>
+        </HashRouter>
       </context.Provider>
     </>
   )
