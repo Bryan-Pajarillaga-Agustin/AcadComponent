@@ -5,17 +5,17 @@ import { arrayUnion, doc, updateDoc } from "firebase/firestore"
 import { useContext, useEffect } from "react"
 import { context } from "../../../App"
 import { tasksContext } from "../Tasks"
-import { useNavigate } from "react-router-dom"
 const SaveChanges = () => {
     const { saveChanges, setSaveChanges, user,
-        setHideSideBar, setLoading, prevPage } = useContext(context)
+        setHideSideBar, setLoading,
+        setChanges, setTasksCache } = useContext(context)
 
     const { setNumberOfChanges,
-        numberOfChanges,} = useContext(tasksContext)
+        numberOfChanges, backUpNavigation} = useContext(tasksContext)
 
 
     const { setTasks } = useContext(tasksContext)
-    const navigation = useNavigate()
+
     const saveToDataBase = async () => {
         let changes = JSON.parse(localStorage.getItem("Changes"))
         if (changes) {
@@ -31,10 +31,11 @@ const SaveChanges = () => {
                 await updateDoc(docRef, { tasks: changes });  //Update from local state after successful write
                 setNumberOfChanges(null)
                 setTasks([...changes])
+                setChanges(null)
                 localStorage.removeItem("Changes")
-                navigation(prevPage)
+                setTasksCache([...changes])
+                backUpNavigation()
             } catch (error) {
-                alert("Error Saving Your Changes")
                 setSaveChanges(false)
                 console.log("Error writing task:", error);
             }

@@ -27,3 +27,9 @@
 .foldersBottomNav .right {
     margin-right: 1rem;
 }
+
+@media (max-width: 700px) and (max-height: 800px) {
+    .fullContent {
+        display: none;
+    }
+}

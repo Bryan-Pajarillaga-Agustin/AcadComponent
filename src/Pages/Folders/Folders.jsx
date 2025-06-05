@@ -7,6 +7,7 @@ import FoldersNavbar from "./FoldersNavbar/FoldersNavbar"
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { deleteObject, listAll, ref } from "firebase/storage"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
+import Button from "../../Components/Button"
 
 export const foldersContext = createContext()
 
@@ -261,11 +262,11 @@ const Folders = () => {
 
 
     useEffect(() => {
-        setPages(prev => prev.map((p) => {
-            if (p.name === "Folders") return { ...p, ind: true }
-
-            return { ...p, ind: false }
-        }))
+        setPages(prev => prev.map((p) =>
+            p.name === "Folders" ?
+                { ...p, ind: true } :
+                { ...p, ind: false }
+        ))
     }, [])
 
     // Component
@@ -278,13 +279,11 @@ const Folders = () => {
         saveToDatabase: () => { saveToDatabase() }
     }
 
-    const FileOrImage = ({folder}) => {
-        console.log(folder.fileType)
-
+    const FileOrImage = ({ folder }) => {
         return <>
             {
                 folder.fileType.includes("image") ?
-                    <input type="image" src={folder.url} width={"16px"} style={{marginRight: "1rem"}} /> :
+                    <input type="image" src={folder.url} width={"16px"} style={{ marginRight: "1rem" }} /> :
                     <i className="fa fa-file"></i>
             }
         </>
@@ -334,9 +333,10 @@ const Folders = () => {
                             onKeyDown={(e) => {
                                 createFolder(e)
                             }} />
-                        <i
+                        <Button
                             className={`fa fa-close ${s.close}`}
-                            onClick={() => { setShowFolderInput(false) }}></i>
+                            content={"Cancel"}
+                            func={() => { setShowFolderInput(false) }}></Button>
                     </div>
                     {openedFolder?.map((folder, i) =>
                         <label
@@ -362,7 +362,7 @@ const Folders = () => {
                             {
                                 folder.type == "folder" ?
                                     <i className="fa fa-folder"></i> :
-                                    <FileOrImage folder={folder}/>
+                                    <FileOrImage folder={folder} />
                             }
                             {
                                 renameFolderInput != null &&

@@ -3,7 +3,7 @@ import Button from "../../../Components/Button"
 import { db } from "../../../Firebase/Firebase"
 import { arrayUnion, doc, updateDoc } from "firebase/firestore"
 import { useEffect } from "react"
-const ChangesInAccount = ({showChanges, setShowChanges, setShowPersonalInfo, saveAccountChanges, setEditAccount}) => {
+const ChangesInAccount = ({showChanges, setShowChanges, saveAccountChanges, setEditAccount}) => {
 
     if (showChanges) return (
         <div className={s.Changes_Wrapper}>
@@ -19,7 +19,7 @@ const ChangesInAccount = ({showChanges, setShowChanges, setShowPersonalInfo, sav
                             func={()=>{window.location.reload()}} />
                     <Button 
                             content={"Yes"}
-                            func={()=>{setShowChanges(false), saveAccountChanges(), setShowPersonalInfo(false), setEditAccount(false)}}/>
+                            func={()=>{setShowChanges(false), saveAccountChanges(), setEditAccount(false)}}/>
                 </div>
             </div>
         </div>

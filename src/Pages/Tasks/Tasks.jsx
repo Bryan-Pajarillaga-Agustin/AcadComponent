@@ -23,11 +23,17 @@ export const tasksContext = createContext()
 
 import { db } from '../../Firebase/Firebase'
 import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore'
+import { useNavigate } from 'react-router-dom'
 const Tasks = () => {
   const loc = JSON.parse(localStorage.getItem("Changes"))
+  const navigation = useNavigate()
 
   // Context
-  const { user, setShowMakeUserSignIn, setPages, setLoading, changes, setChanges, setTasksCache, tasksCache } = useContext(context)
+  const { user, setShowMakeUserSignIn, 
+    setPages, setLoading, 
+    changes, setChanges, 
+    setTasksCache, tasksCache,
+    prevPage, pagination } = useContext(context)
 
   // Refs
   const searchValue = useRef()
@@ -156,6 +162,7 @@ const Tasks = () => {
       locStor.push(upData)
     }
     localStorage.setItem("Changes", JSON.stringify(locStor))
+    setChanges([...locStor])
     setNumberOfChanges(locStor.length - 1)
 
     let checkedUpData = []
@@ -200,6 +207,24 @@ const Tasks = () => {
     }
   }
 
+  function backUpNavigation() {
+    navigation(prevPage)
+    switch (prevPage) {
+      case "/AcadComponent/":
+        pagination(0)
+        break;
+      case "/AcadComponent/Tasks":
+        pagination(1)
+        break;
+      case "/AcadComponent/Folders":
+        pagination(2)
+        break;
+      case "/AcadComponent/Contacts":
+        pagination(3)
+        break;
+    }
+  }
+
   async function saveToDataBase() {
     const userUID = user?.uid.toString();
     const docRef = doc(db, `Users/${userUID}`);
@@ -216,8 +241,9 @@ const Tasks = () => {
       setTasks([...changes])
       unselectAll()
       localStorage.removeItem("Changes")
+      setChanges(null)
     } catch (error) {
-      alert(error.message)
+      alert("Failed to Save Changes. Please Try Again.")
     }
 
     setLoading(false)
@@ -229,7 +255,10 @@ const Tasks = () => {
   // Effects
 
   useEffect(() => {
-    if (user?.uid && tasksCache?.length == 0) {
+    if (changes != null) {
+      console.log(changes[changes.length - 1])
+      setTasks([...changes[changes.length - 1]])
+    } else if (user?.uid && tasksCache?.length == 0) {
       setShowMakeUserSignIn(false)
       setPages(prev => prev.map((p) => {
         return p.name === "Tasks" ?
@@ -253,12 +282,33 @@ const Tasks = () => {
       }
 
       getFromFirestore()
+    } else if (tasksCache?.length > 1) {
+      setTasks(tasksCache)
     } else {
       setShowMakeUserSignIn(true)
     }
-
   }, [user])
 
+
+  useEffect(() => {
+    if (searchValue.current.value == "") {
+      setSearching(false)
+      setFilteredTasks(null)
+    } else {
+      setSearching(true)
+      setFilteredTasks(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
+      console.log(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
+      setSorting(false)
+    }
+  }, [tasks])
+
+  useEffect(() => {
+    setPages(prev => prev.map((p) =>
+      p.name === "Tasks" ?
+        { ...p, ind: true } :
+        { ...p, ind: false }
+    ))
+  }, [])
 
   // ContextVariable
 
@@ -292,32 +342,9 @@ const Tasks = () => {
     // Functions
     unselectAll, handleSelectedTasks,
     handleMarking, saveToDataBase,
+    backUpNavigation: () => {backUpNavigation()},
     writeTask: (data) => writeTask(data)
   }
-
-  useEffect(() => {
-    if (searchValue.current.value == "") {
-      setSearching(false)
-      setFilteredTasks(null)
-    } else {
-      setSearching(true)
-      setFilteredTasks(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
-      console.log(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
-      setSorting(false)
-    }
-  }, [tasks])
-
-  useEffect(() => {
-    if (changes?.length != 0) {
-      let data = changes
-      if (data != null) setTasks(data ? [...data[data.length-1]] : null)
-    } 
-
-    if(tasksCache) {
-      console.log(tasksCache)
-      setTasks(tasksCache)
-    }
-  }, [changes, tasksCache])
 
 
   return <>

@@ -87,7 +87,7 @@ const NavBar = () => {
                                 <li
                                     to={link.path}
                                     key={link.path}
-                                    onClick={() => { changeTab(link, i), setPrevPage(link.path) }}
+                                    onClick={() => { changeTab(i, link.path), setPrevPage(link.path) }}
                                     className={link.ind ? `${s.Links} ${s.indicated}` : `${s.Links} ${s.notIndicated}`}>
                                     {link.icon}
                                     <span>

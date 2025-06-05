@@ -16,7 +16,7 @@ import { context } from "../../App"
 
 export const dashboardContext = createContext()
 const Dashboard = () => {
-    const { userData, user, setLoading } = useContext(context)
+    const { userData, user, setLoading, getDataFromFireStore } = useContext(context)
 
     const skillRef = useRef()
 
@@ -75,6 +75,8 @@ const Dashboard = () => {
                 contacts: contacts,
                 skills: skills
             })
+
+            getDataFromFireStore(user)
         } catch (error) {
             console.log(error)
         }
@@ -88,8 +90,14 @@ const Dashboard = () => {
         setLoading,
 
         // Input States
-        uName, school, pBirth, age,
-        bDay, gender, hobbies, grSec,
+        uName, setUName,
+        school, setSchool,
+        pBirth, setPBirth,
+        age, setAge,
+        bDay, setBDay,
+        gender, setGender,
+        hobbies, setHobbies,
+        grSec, setGrSec,
         purpose, setPurpose,
         usingAs, setUsingAs,
         desc, setDesc,
@@ -100,7 +108,7 @@ const Dashboard = () => {
         skills, setSkills,
         contacts, setContacts,
         favSubjects, setFavSubjects,
-        
+
         // Functions
         addSkill,
         saveAccountChanges
@@ -158,7 +166,6 @@ const Dashboard = () => {
                 </div>
                 <ChangesInAccount editAccount={editAccount}
                     setEditAccount={(val) => setEditAccount(val)}
-                    setShowPersonalInfo={(val) => setShowPersonalInformation(val)}
                     saveAccountChanges={() => saveAccountChanges()}
                     showChanges={showChanges}
                     setShowChanges={val => setShowChanges(val)} />

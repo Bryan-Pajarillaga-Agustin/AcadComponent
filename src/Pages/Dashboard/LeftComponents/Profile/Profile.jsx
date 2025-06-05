@@ -3,8 +3,7 @@ import Button from "../../../../Components/Button"
 import { useState, useRef, useEffect, useContext } from "react"
 import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage"
 import { auth, cloudDB, db } from "../../../../Firebase/Firebase"
-import { updateDoc,doc, collection, addDoc, getDocs, arrayUnion } from "firebase/firestore"
-import { createPortal } from "react-dom"
+import { updateDoc, doc } from "firebase/firestore"
 import { dashboardContext } from "../../Dashboard"
 db
 const Profile = () => {

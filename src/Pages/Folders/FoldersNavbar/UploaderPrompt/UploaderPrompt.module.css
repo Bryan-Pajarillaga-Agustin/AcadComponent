@@ -11,7 +11,125 @@
     justify-content: center;
 }
 
-.uploaderWrapper > input {
+.progressBarWrapper, .hidesProgressBarWrapper  {
+    width: 380px;
+    height: 12rem;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.992); 
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 1rem 1rem;
+    z-index: 1;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.progressBarWrapper {
+    top: -12rem;
+    animation: down .3s ease-out forwards;
+}
+
+.hidesProgressBarWrapper {
+    top: -12rem;
+    animation: up .3s ease-out forwards;
+}
+
+.progressBarWrapper .showProgressButton,
+.hidesProgressBarWrapper .showProgressButton {
+    position: absolute;
+    top: 12rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 1rem 1rem;
+}
+
+.uploaderWrapper .progressBarWrapper > h3, .uploaderWrapper .hidesProgressBarWrapper > h3 {
+    width: 100%;
+    padding: .5rem 0;
+    background-color: #ffa500;
+    border-radius: 0 0 1rem 1rem;
+    text-align: center;
+}
+
+.progressBarBox > h4 {
+    width: 90%;
+}
+
+.progressBarBox {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 90%;
+    color: #ffa500;
+}
+
+.uploadingFile {
+    display: flex;
+    height: 3rem;
+    width: 18rem;
+    background-color: #e3e0e0;
+    border: .35rem solid #ffa500;
+    align-items: center;
+    margin: .4rem 0;
+}
+
+.uploadingFile > * {
+    padding: .5rem 0;
+}
+
+.uploadingFile > img {
+    width: 1.5rem;
+}
+
+.uploadingFile > img, .uploadingFile > i {
+    padding: .5rem .5rem;
+}
+
+.uploadingFile > i {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.uploadingFile .wrapNameAndBar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: .5rem 0;
+    padding-right: .7rem;
+}
+
+.uploadingFile .wrapNameAndBar .bar {
+    width: 100%;
+    height: .5rem;
+    background-color: white;
+    border: .2rem solid black  ;
+    border-radius: 1rem;
+} 
+
+.uploadingFile .wrapNameAndBar .bar .barColor {
+    height: 100%;
+    width: 0%;
+    background-color: rgb(93, 93, 210);
+    transition: .3s ease-out;
+}
+
+.uploadingFile .wrapNameAndBar .wrapNameAndProgress {
+    display: flex;
+    height: 50%;
+    font-size: .7rem;
+    color: #ffa500;
+    justify-content: space-between;
+}
+
+.uploaderWrapper>input {
     display: none;
 }
 
@@ -39,7 +157,7 @@
     justify-content: center;
 }
 
-.uploaderWrapper .uploaderBox .uploaderBoxLabel > img {
+.uploaderWrapper .uploaderBox .uploaderBoxLabel>img {
     width: 7rem;
 }
 
@@ -47,4 +165,16 @@
     position: absolute;
     top: 0;
     right: 0;
+}
+
+@keyframes down {
+    to{
+        top: 0;
+    }
+}
+
+@keyframes up {
+    to{
+        top: -12rem;
+    }
 }

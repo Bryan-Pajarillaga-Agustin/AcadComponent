@@ -137,7 +137,6 @@ const TopOptions = () => {
     changes = changes[numChanges]
     setTasks([...changes])
     setNumberOfChanges(numChanges)
-    console.log(JSON.parse(localStorage.getItem("Changes")))
   }
 
   function handleUndo() {
@@ -146,7 +145,6 @@ const TopOptions = () => {
     changes = changes[numChanges]
     setTasks([...changes])
     setNumberOfChanges(numChanges)
-    console.log(JSON.parse(localStorage.getItem("Changes")))
   }
 
 
