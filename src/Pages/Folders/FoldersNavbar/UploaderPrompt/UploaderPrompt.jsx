@@ -77,7 +77,7 @@ const UploaderPrompt = ({ uploaderPrompt, setUploaderPrompt }) => {
 
     if (uploaderPrompt)
         return <div className={s.uploaderWrapper}>
-            <input type="file" id="fileUploader" accept="*" ref={inputRef} onChange={e => { uploadFile(e.target.files) }} />
+            <input type="file" id="fileUploader" accept="*" ref={inputRef} onChange={e => { uploadFile(e.target.files) }} multiple />
 
             <div className={progressBar ? s.progressBarWrapper : s.hidesProgressBarWrapper}>
                 <Button
