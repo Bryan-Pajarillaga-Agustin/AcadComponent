@@ -1,8 +1,9 @@
-# React + Vite
+# Acad Web ApplicationAdd commentMore actions
+This is a To-do List web application that uses react JS as front-end and Firebase JS for the backend database, authentication and real-time database.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The version of this To-do List has its own editor where tasks can be edit whether you want to change its background-color, and border-color, font-color, font-weight, content, styles and many more.
 
-Currently, two official plugins are available:
+You can upload files in each task that you want to upload to.
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
