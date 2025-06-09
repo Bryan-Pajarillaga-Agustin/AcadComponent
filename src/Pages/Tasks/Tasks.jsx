@@ -29,9 +29,9 @@ const Tasks = () => {
   const navigation = useNavigate()
 
   // Context
-  const { user, setShowMakeUserSignIn, 
-    setPages, setLoading, 
-    changes, setChanges, 
+  const { user, setShowMakeUserSignIn,
+    setPages, setLoading,
+    changes, setChanges,
     setTasksCache, tasksCache,
     prevPage, pagination } = useContext(context)
 
@@ -273,6 +273,17 @@ const Tasks = () => {
 
           let tasksData = data.data().tasks
 
+          console.log(tasksData)
+
+          for (let i in tasksData) {
+            tasksData[i].cName = [
+              JSON.stringify(styles.col),
+              JSON.stringify(styles.br),
+              JSON.stringify(styles.fs),
+              JSON.stringify(styles.bgC),
+              JSON.stringify(styles.fW),
+            ]
+          }
 
           setTasks([...tasksData])
           setTasksCache([...tasksData])
@@ -282,6 +293,8 @@ const Tasks = () => {
       }
 
       getFromFirestore()
+    } else if (user?.uid == null && tasksCache == null) {
+      setTasks(tasksCache)
     } else if (tasksCache?.length > 1) {
       setTasks(tasksCache)
     } else {
@@ -297,7 +310,6 @@ const Tasks = () => {
     } else {
       setSearching(true)
       setFilteredTasks(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
-      console.log(tasks.filter((task) => task.task.toLowerCase().includes(searchValue.current.value.toLowerCase())))
       setSorting(false)
     }
   }, [tasks])
@@ -342,7 +354,7 @@ const Tasks = () => {
     // Functions
     unselectAll, handleSelectedTasks,
     handleMarking, saveToDataBase,
-    backUpNavigation: () => {backUpNavigation()},
+    backUpNavigation: () => { backUpNavigation() },
     writeTask: (data) => writeTask(data)
   }
 

@@ -2,22 +2,12 @@ import s from "./MakeUserSignIn.module.css"
 import Button from "../../Components/Button"
 import { useContext } from "react"
 import { context } from "../../App"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const MakeUserSignIn = () => {
     const { showMakeUserSignIn, setShowMakeUserSignIn, 
-            setPage, user } = useContext(context)
+            user, pagination } = useContext(context)
 
-    function handleExitMakeUserSignIn(){
-        setShowMakeUserSignIn(false)
-        setPage(1)
-        let link = window.location.href
-        link.toLowerCase()
-        let index = link.search("/Acad/")
-        link = link.slice(0, index + 6).concat("#Home")
-
-        window.location.href = link
-    }
     
     return (
         <>
@@ -25,8 +15,8 @@ const MakeUserSignIn = () => {
                 <div className={s.makeUserSignInBox}>
                     <Link
                         className={s.hidePromptButton}
-                        to={"/AcadComponent/"}
-                        onClick={()=>{handleExitMakeUserSignIn()}}>
+                        to={"/"}
+                        onClick={()=>{pagination(0), setShowMakeUserSignIn(false)}}>
                         <i className="fa fa-close"></i>
                     </Link>
                     <div className={s.Images}>
@@ -38,13 +28,13 @@ const MakeUserSignIn = () => {
                     <div className={s.Buttons}>
                         <Link
                             className={s.Links}
-                            to={"/AcadComponent/SignUp"}
+                            to={"/SignUp"}
                             onClick={()=>{setShowMakeUserSignIn(false)}}>
                                 Sign Up
                         </Link>
                         <Link
                             className={s.Links}
-                            to={"/AcadComponent/SignIn"}
+                            to={"/SignIn"}
                             onClick={()=>{setShowMakeUserSignIn(false)}}>
                                 Sign In
                         </Link>

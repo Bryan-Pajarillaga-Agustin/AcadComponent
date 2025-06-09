@@ -89,6 +89,9 @@ const Dashboard = () => {
         user,
         setLoading,
 
+        // Ref
+        skillRef,
+
         // Input States
         uName, setUName,
         school, setSchool,

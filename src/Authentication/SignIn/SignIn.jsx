@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom"
 export default function SignIn() {
     const { setUser, setShowSignInPrompt, 
             setShowSignUpPrompt, setLoading,
-            setContinueAs, setHideNavBar,
+            setContinueAs, pagination,
             prevPage } = useContext(context)
 
     const navigate = useNavigate()
@@ -81,6 +81,7 @@ export default function SignIn() {
                 setUser(auth.currentUser)
                 setContinueAs(true)
                 navigate(prevPage)
+                pagination(0)
             } catch (error) {
                 console.log(error)
                 if (error.code == 'auth/invalid-email') {
@@ -108,13 +109,9 @@ export default function SignIn() {
             setUser(auth.currentUser)
             const docRef = doc(db, "Users", auth.currentUser?.uid)
             const docSnap = await getDoc(docRef)
-            if (docSnap.exists()) {
-                setShowSignInPrompt(false)
-            } else {
-                setShowSignUpPrompt(true)
-            }
             setContinueAs(true)
             navigate(prevPage)
+            pagination(0)
         } catch (error) {
             console.log(error)
         }

@@ -61,15 +61,15 @@ const NavBar = () => {
                 {
                     user?.uid ?
                     <div className={s.right}>
-                        <Link to={"/AcadComponent/Dashboard"} className={s.Links} ><button className={s.authButts}>Account</button></Link>
+                        <Link to={"/Dashboard"} className={s.Links} ><button className={s.authButts}>Account</button></Link>
                         <button className={`${s.authButts} ${s.signOut}`} onClick={()=>{setIsSigningOut(true)}} >Log Out</button>
                         <button className={s.HamburgerButt} onClick={()=>{setHideSideBar(false)}}><i className="fa fa-list-ul"></i></button>
                     </div>  : 
                     <div className={s.right}>
-                        <Link to={"/AcadComponent/SignIn"} className={s.Links}>
+                        <Link to={"/SignIn"} className={s.Links}>
                             <button className={s.authButts} >Sign In</button>
                         </Link>
-                        <Link to={"/AcadComponent/SignUp"} className={s.Links}>
+                        <Link to={"/SignUp"} className={s.Links}>
                             <button className={`${s.authButts} ${s.signUp}`} >Sign Up</button>
                         </Link>
                         

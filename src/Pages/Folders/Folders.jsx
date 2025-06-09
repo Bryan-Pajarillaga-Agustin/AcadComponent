@@ -12,7 +12,7 @@ import Button from "../../Components/Button"
 export const foldersContext = createContext()
 
 const Folders = () => {
-    const { user, setLoading, foldersCache, setFoldersCache } = useContext(context)
+    const { user, setLoading, foldersCache, setFoldersCache, setShowMakeUserSignIn } = useContext(context)
 
     const { setPages, imageContent, setImageContent } = useContext(context)
     const folderInputRef = useRef(null)
@@ -260,6 +260,14 @@ const Folders = () => {
         }
     }, [foldersCache, user])
 
+
+    useEffect(()=>{
+        if(!user?.uid) {
+            setShowMakeUserSignIn(true)
+        } else {
+            setShowMakeUserSignIn(false)
+        }
+    },[user])
 
     useEffect(() => {
         setPages(prev => prev.map((p) =>

@@ -5,9 +5,8 @@ import Task from '../Task/Task'
 import { tasksContext } from '../../Tasks'
 
 const MapTasks = () => {
-    const { tasks, sortOptions,
-            searching, filteredTasks,
-            tasksOnType, setTasksOnType } = useContext(tasksContext)
+    const { sortOptions, tasksOnType, 
+            searching, filteredTasks } = useContext(tasksContext)
     
     const { sorting, type, selecting } = useContext(tasksContainerContext)
     

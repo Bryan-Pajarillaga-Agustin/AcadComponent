@@ -5,13 +5,13 @@ import './App.css'
 import NavBar from './Navbar/Navbar'
 
 // Page Components
-import Home from "./Pages/Home/Home"
-import Tasks from "./Pages/Tasks/Tasks"
-import Folders from "./Pages/Folders/Folders"
-import Contacts from "./Pages/Contacts/Contacts"
-import Dashboard from './Pages/Dashboard/Dashboard'
-import SignIn from "./Authentication/SignIn/SignIn"
-import SignUp from "./Authentication/SignUp/SignUp"
+const Home = lazy(() => import('./Pages/Home/Home'))
+const Tasks = lazy(() => import('./Pages/Tasks/Tasks'))
+const Folders = lazy(() => import('./Pages/Folders/Folders'))
+const About = lazy(() => import('./Pages/About/About'))
+const Dashboard = lazy(() => import('./Pages/Dashboard/Dashboard'))
+const SignIn = lazy(() => import('./Authentication/SignIn/SignIn'))
+const SignUp = lazy(() => import('./Authentication/SignUp/SignUp'))
 
 
 // Other Components
@@ -28,13 +28,13 @@ import MakeUserSignIn from './Authentication/MakeUserSignIn/MakeUserSignIn'
 
 
 const router = [
-  { path: "/AcadComponent/", element: <Home /> },
-  { path: "/AcadComponent/Tasks", element: <Tasks /> },
-  { path: "/AcadComponent/Folders", element: <Folders /> },
-  { path: "/AcadComponent/Contacts", element: <Contacts /> },
-  { path: "/AcadComponent/Dashboard", element: <Dashboard /> },
-  { path: "/AcadComponent/SignIn", element: <SignIn /> },
-  { path: "/AcadComponent/SignUp", element: <SignUp /> },
+  { path: "/", element: <Home /> },
+  { path: "/Tasks", element: <Tasks /> },
+  { path: "/Folders", element: <Folders /> },
+  { path: "/About", element: <About /> },
+  { path: "/Dashboard", element: <Dashboard /> },
+  { path: "/SignIn", element: <SignIn /> },
+  { path: "/SignUp", element: <SignUp /> },
   { path: "*", element: <PageNotFound /> }
 ]
 
@@ -52,7 +52,7 @@ function App() {
   const [continueAs, setContinueAs] = useState(false)
   const [saveChanges, setSaveChanges] = useState(false)
 
-  const [prevPage, setPrevPage] = useState("/AcadComponent/")
+  const [prevPage, setPrevPage] = useState("/")
   const [imageContent, setImageContent] = useState(null)
 
   const [user, setUser] = useState()
@@ -66,30 +66,39 @@ function App() {
       ind: false,
       icon: (<span className='material-icons'>home</span>),
       page: <Home />,
-      path: "/AcadComponent/"
+      path: "/"
     },
     {
       name: "Tasks",
       ind: false,
       icon: (<span className='fa fa-book'></span>),
       page: <Tasks />,
-      path: "/AcadComponent/Tasks"
+      path: "/Tasks"
     },
     {
       name: "Folders",
       ind: false,
       icon: (<span className='material-icons'>folder</span>),
       page: <Folders />,
-      path: "/AcadComponent/Folders"
+      path: "/Folders"
     },
     {
-      name: "Contacts",
+      name: "About",
       ind: false,
-      icon: (<span className='material-icons'>phone</span>),
-      page: <Contacts />,
-      path: "/AcadComponent/Contacts"
+      icon: (<span className='fa fa-question-circle'></span>),
+      page: <About />,
+      path: "/About"
     },
   ])
+
+  
+  function handlePages(index) {
+    setPages(prev => prev.map((page, i) =>
+      index == i ?
+        { ...page, ind: true } :
+        { ...page, ind: false }
+    ))
+  }
 
   if (!user?.uid)
     onAuthStateChanged(auth, (current) => {
@@ -144,14 +153,6 @@ function App() {
     }
   }
 
-  function handlePages(index) {
-    console.log(index)
-    setPages((prev, i) => prev.map((page, i) =>
-      index == i ?
-        { ...page, ind: true } :
-        { ...page, ind: false }
-    ))
-  }
 
 
 

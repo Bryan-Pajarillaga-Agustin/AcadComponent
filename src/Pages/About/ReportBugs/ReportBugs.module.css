@@ -1,0 +1,110 @@
+.reportBugsWrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    box-shadow: 0px 3px 10px -5px black;
+    height: 100%;
+    margin-right: 1rem;
+    border-radius: 1rem;
+    align-items: space-between;
+    color: #ffa500;
+    border: .1rem solid rgb(138, 135, 135);
+}
+
+
+.reportBugsWrapper button{
+     padding: clamp(.3rem, 2vw, .5rem) clamp(.5rem, 2vw, 1rem);
+    outline: none;
+    border: none;
+    border-radius: .5rem;
+    background-color: var(--buttBgColor);
+    color: var(--buttColor);
+    border: .2rem solid var(--buttBgColor);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    gap: .5rem;
+    transition: .2s ease-out;
+    margin-right: 1rem;
+}
+
+.reportBugsWrapper button:active {
+    outline: auto;
+    filter: brightness(.8);
+}
+
+.reportBugsWrapper .top {
+    display: flex;
+    justify-content: space-between;
+    height: 20%;
+    align-items: center;
+}
+
+.reportBugsWrapper .top > h3{
+    margin-left: 1rem;
+}
+
+
+.reportBugsWrapper .top > button{
+     padding: clamp(.3rem, 2vw, .5rem) clamp(.5rem, 2vw, 1rem);
+    outline: none;
+    border: none;
+    border-radius: .5rem;
+    background-color: var(--buttBgColor);
+    color: var(--buttColor);
+    border: .2rem solid var(--buttBgColor);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    gap: .5rem;
+    transition: .2s ease-out;
+    margin-right: 1rem;
+}
+
+.reportBugsWrapper .middle {
+    height: 70%;
+}
+
+.reportBugsWrapper .middle > textarea {
+    width: 80%;
+    height: 90%;
+    padding: .5rem;
+    margin: auto;
+    display: block;
+    font-size: clamp(.7rem, 1.2rem);
+}
+
+
+.reportBugsWrapper .bottom {
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.reportBugsWrapper .bottom > button{
+    margin-right: 1rem;
+    border: .2rem solid red;
+    background-color: white;
+    color: red;
+}
+
+.reportBugsWrapper .bottom > button:hover{
+    margin-right: 1rem;
+    border: .2rem solid red;
+    background-color: red;
+    color: white;
+}
+
+@media (max-width: 600px) and (max-height: 800px) {
+    .reportBugsWrapper {
+        height: 50vh;
+        width: 90%;
+    }
+}
+
+@media (max-width: 700px) and (max-height: 400px) {
+    .reportBugsWrapper{
+        height: 150vh;
+    }
+}

@@ -1,0 +1,72 @@
+.rateWrapper {
+    color: #ffa500;
+    display: flex;
+    flex-direction: column;
+    height: 20vh;
+    margin-right: 1rem;
+}
+
+.rateWrapper>h3 {
+    text-align: center;
+    color: white;
+    border-radius: 1rem 1rem 0 0;
+    padding: .5rem 0;
+    font-size: clamp(.5rem, 2vw, 1.4rem);
+    background-color: #ffa500;
+}
+
+.rateWrapper .starsWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0px 3px 10px -5px black;
+}
+
+.rateWrapper .starsWrapper .stars {
+    display: flex;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    margin: .5rem 0;
+    box-shadow: 0px 3px 10px -5px black;
+}
+
+
+.rateWrapper .starsWrapper .stars>img {
+    display: flex;
+    width: 35px;
+    height: 35px;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 600px) and (max-height: 800px) {
+    .rateWrapper {
+        color: #ffa500;
+        display: flex;
+        flex-direction: column;
+        height: 80px;
+        width: 90%;
+        margin-right: 1rem;
+    }
+
+    .rateWrapper > h3 {
+        font-size: 1.3rem;
+    }
+
+    .rateWrapper .starsWrapper .stars {
+        width: 25px;
+        height: 25px;
+        margin: .5rem 0;
+    }
+
+    .rateWrapper .starsWrapper .stars>img {
+        width: 20px;
+        height: 20px;
+    }
+
+
+}

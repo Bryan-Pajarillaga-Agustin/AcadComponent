@@ -8,15 +8,17 @@ import Button from "../../Components/Button"
 import { context } from "../../App"
 import { Link, useNavigate } from "react-router-dom"
 import { createUserWithEmailAndPassword } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore"
 import { auth, db } from "../../Firebase/Firebase"
 
 export const signUpContext = createContext()
 
 const SignUp = () => {
 
-    const { setLoading, setContinueAs, 
-            setUser, prevPage} = useContext(context)
+    const { setLoading, 
+            setUser, prevPage,
+            setTasksCache, setFoldersCache,
+            setUserData } = useContext(context)
 
     const navigate = useNavigate()
 
@@ -41,7 +43,7 @@ const SignUp = () => {
     const [showConfirm, setShowConfirm] = useState(false)
 
     // Array and object variables
-    const [indicated, setIndication] = useState(0)
+    const [indicated, setIndication] = useState(1)
     const [usage, setUsage] = useState([])
     const [selectedSubjects, setSelectedSubjects] = useState([])
 
@@ -126,11 +128,14 @@ const SignUp = () => {
                         email: arrayOfInputs[0][0]
                     })
                     setIndication(indicated + 1)
+                    setTasksCache(null)
+                    setFoldersCache(null)
                 } catch (error) {
                     console.log(error)
                     if (error.code == "auth/email-already-in-use") {
                         arrayOfInputs[1][0].innerText = "Email is already taken."
                     }
+                    setLoading(false)
                 }
 
                 setLoading(false)
@@ -273,9 +278,11 @@ const SignUp = () => {
                     purpose: usingAsInput?.current.value,
                 }
             })
+            const getInformation = await getDoc(doc(db, "Users", user.uid))
+            setUserData(getInformation)
             navigate(prevPage)
             handleInputs()
-            setContinueAs(true)
+
         } catch (error) {
             console.log(error.message)
         }

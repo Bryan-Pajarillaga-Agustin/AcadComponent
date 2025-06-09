@@ -3,7 +3,7 @@ import s from "./FoldersNavbar.module.css"
 import UploaderPrompt from "./UploaderPrompt/UploaderPrompt"
 
 const FoldersNavbar = ({ setShowFolderInput }) => {
-    const [uploaderPrompt, setUploaderPrompt] = useState(true)
+    const [uploaderPrompt, setUploaderPrompt] = useState(false)
 
     return <div className={s.foldersNav}>
         <h1>Folders</h1>

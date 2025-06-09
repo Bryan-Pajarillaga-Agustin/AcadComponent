@@ -1,0 +1,33 @@
+.pictureWrapper {
+    width: 99vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: rgba(200, 202, 203, 0.76);
+}
+
+.pictureWrapper .hidePromptButt {
+    padding: clamp(.3rem, 2vw, .75rem) clamp(.5rem, 2vw, 1rem);
+    outline: none;
+    border: none;
+    border-radius: .5rem;
+    background-color: var(--buttBgColor);
+    color: var(--buttColor);
+    border: .2rem solid var(--buttBgColor);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    position: absolute;
+    right: 0;
+    gap: .5rem;
+    transition: .2s ease-out;
+}
+
+.pictureWrapper .hidePromptButt:hover {
+    background-color: var(--buttColor);
+    color: var(--buttBgColor);
+}
